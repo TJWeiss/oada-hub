@@ -1,0 +1,837 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OADA Mobility — Operations Hub</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&family=Instrument+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --paper: #f4f1eb;
+    --warm: #e8e2d4;
+    --rule: #c8bfaa;
+    --accent: #2e5d3b;
+    --accent-light: #e8f0ea;
+    --amber: #c4622d;
+    --amber-light: #faf0e8;
+    --steel: #3a4a5c;
+    --steel-light: #eaecf0;
+    --muted: #7a7060;
+    --danger: #8b2020;
+    --danger-light: #faeaea;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Instrument Sans', sans-serif; background: var(--paper); color: var(--ink); min-height: 100vh; display: flex; }
+
+  .sidebar { width: 220px; min-height: 100vh; background: var(--ink); color: var(--warm); display: flex; flex-direction: column; position: fixed; top: 0; left: 0; z-index: 100; }
+  .sidebar-logo { padding: 28px 20px 20px; border-bottom: 1px solid #333; }
+  .wordmark { font-family: 'DM Serif Display', serif; font-size: 20px; color: #fff; line-height: 1.1; }
+  .tagline { font-family: 'DM Mono', monospace; font-size: 9px; color: #555; letter-spacing: 0.12em; text-transform: uppercase; margin-top: 4px; }
+  .sidebar-nav { padding: 16px 0; flex: 1; }
+  .nav-section-label { font-family: 'DM Mono', monospace; font-size: 8px; letter-spacing: 0.18em; text-transform: uppercase; color: #555; padding: 12px 20px 6px; }
+  .nav-item { display: flex; align-items: center; gap: 10px; padding: 9px 20px; cursor: pointer; font-size: 13px; color: #aaa; transition: all 0.15s; border-left: 2px solid transparent; font-weight: 500; }
+  .nav-item:hover { color: #fff; background: rgba(255,255,255,0.04); }
+  .nav-item.active { color: #fff; border-left-color: var(--accent); background: rgba(255,255,255,0.06); }
+  .nav-icon { font-size: 14px; width: 18px; text-align: center; }
+  .sidebar-footer { padding: 16px 20px; border-top: 1px solid #333; font-family: 'DM Mono', monospace; font-size: 9px; color: #444; letter-spacing: 0.08em; }
+
+  .main { margin-left: 220px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { background: var(--paper); border-bottom: 1px solid var(--rule); padding: 16px 32px; display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 50; }
+  .topbar-title { font-family: 'DM Serif Display', serif; font-size: 22px; }
+  .topbar-meta { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); letter-spacing: 0.08em; text-align: right; }
+  .content { padding: 32px; flex: 1; }
+
+  .panel { display: none; }
+  .panel.active { display: block; }
+
+  .stat-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+  .stat-card { background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 18px 20px; }
+  .stat-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .stat-value { font-family: 'DM Serif Display', serif; font-size: 28px; line-height: 1; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  .section-header { display: flex; align-items: baseline; justify-content: space-between; margin-bottom: 14px; }
+  .section-title { font-family: 'DM Serif Display', serif; font-size: 16px; }
+
+  .btn { font-family: 'Instrument Sans', sans-serif; font-size: 12px; font-weight: 600; padding: 7px 14px; border-radius: 4px; border: none; cursor: pointer; transition: all 0.15s; }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #234830; }
+  .btn-outline { background: transparent; color: var(--ink); border: 1px solid var(--rule); }
+  .btn-outline:hover { background: var(--warm); }
+  .btn-sm { font-size: 11px; padding: 5px 10px; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+
+  .table-wrap { background: #fff; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; margin-bottom: 24px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--warm); padding: 10px 16px; text-align: left; border-bottom: 1px solid var(--rule); font-weight: 400; }
+  td { padding: 11px 16px; font-size: 13px; border-bottom: 1px solid var(--warm); vertical-align: middle; }
+  tr:last-child td { border-bottom: none; }
+  tr:hover td { background: #fafaf8; }
+
+  .badge { display: inline-block; font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.1em; text-transform: uppercase; padding: 3px 8px; border-radius: 3px; font-weight: 500; }
+  .badge-green { background: var(--accent-light); color: var(--accent); }
+  .badge-amber { background: var(--amber-light); color: var(--amber); }
+  .badge-steel { background: var(--steel-light); color: var(--steel); }
+  .badge-red { background: var(--danger-light); color: var(--danger); }
+  .badge-muted { background: var(--warm); color: var(--muted); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+
+  .card { background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 20px; margin-bottom: 16px; }
+  .card-title { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; }
+
+  .phase-list { display: flex; flex-direction: column; gap: 8px; }
+  .phase-item { display: flex; align-items: flex-start; gap: 12px; padding: 10px 14px; border-radius: 4px; background: var(--warm); font-size: 13px; line-height: 1.4; }
+  .phase-item.active { background: var(--accent-light); border-left: 3px solid var(--accent); }
+  .phase-item.blocked { background: var(--danger-light); border-left: 3px solid var(--danger); }
+  .phase-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--muted); flex-shrink: 0; margin-top: 4px; }
+  .phase-item.active .phase-dot { background: var(--accent); }
+  .phase-item.blocked .phase-dot { background: var(--danger); }
+
+  .tools-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .tool-card { background: #fff; border: 1px solid var(--rule); border-radius: 6px; padding: 18px; cursor: pointer; transition: all 0.15s; display: flex; flex-direction: column; gap: 8px; }
+  .tool-card:hover { border-color: var(--accent); box-shadow: 0 2px 12px rgba(45,90,61,0.08); transform: translateY(-1px); }
+  .tool-icon { font-size: 22px; line-height: 1; }
+  .tool-name { font-weight: 600; font-size: 13px; }
+  .tool-desc { font-size: 11px; color: var(--muted); line-height: 1.5; }
+  .tool-status { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.08em; }
+  .tool-status.ok { color: var(--accent); }
+  .tool-status.pending { color: var(--amber); }
+
+  .billing-calc { background: var(--ink); color: #fff; border-radius: 6px; padding: 24px; font-family: 'DM Mono', monospace; margin-bottom: 20px; }
+  .calc-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 1px solid #333; font-size: 12px; }
+  .calc-row:last-child { border-bottom: none; }
+  .calc-row.total { font-size: 14px; color: #9fc; padding-top: 12px; }
+  .calc-input { background: #333; border: none; color: #fff; font-family: 'DM Mono', monospace; font-size: 12px; padding: 4px 8px; border-radius: 3px; width: 130px; text-align: right; }
+  .calc-input:focus { outline: 1px solid #9fc; }
+
+  .checklist-section { margin-bottom: 24px; }
+  .checklist-title { font-family: 'DM Serif Display', serif; font-size: 15px; margin-bottom: 12px; padding-bottom: 6px; border-bottom: 1px solid var(--rule); }
+  .checklist-table { background: #fff; border: 1px solid var(--rule); border-radius: 6px; overflow: hidden; }
+  .checklist-table table { font-size: 12px; }
+  .checklist-table th { font-size: 8px; }
+  .checklist-table td { padding: 8px 12px; }
+  .phase-badge { font-family: 'DM Mono', monospace; font-size: 9px; padding: 2px 6px; border-radius: 2px; background: var(--warm); color: var(--muted); letter-spacing: 0.08em; }
+
+  .crm-form { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+  .form-group { display: flex; flex-direction: column; gap: 5px; }
+  .form-group.full { grid-column: 1 / -1; }
+  .form-label { font-family: 'DM Mono', monospace; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .form-input, .form-select, .form-textarea { padding: 8px 12px; border: 1px solid var(--rule); border-radius: 4px; font-family: 'Instrument Sans', sans-serif; font-size: 13px; background: #fff; color: var(--ink); }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { outline: none; border-color: var(--accent); }
+  .form-textarea { resize: vertical; min-height: 72px; }
+
+  .upload-zone { border: 2px dashed var(--rule); border-radius: 6px; padding: 32px; text-align: center; background: var(--warm); cursor: pointer; transition: all 0.2s; margin-bottom: 20px; }
+  .upload-zone:hover, .upload-zone.drag-over { border-color: var(--accent); background: var(--accent-light); }
+  .upload-icon { font-size: 32px; margin-bottom: 10px; }
+  .upload-label { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .upload-sub { font-size: 12px; color: var(--muted); }
+
+  .file-list { display: flex; flex-direction: column; gap: 8px; }
+  .file-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: #fff; border: 1px solid var(--rule); border-radius: 4px; font-size: 13px; }
+  .file-name { flex: 1; font-weight: 500; }
+  .file-meta { font-size: 11px; color: var(--muted); font-family: 'DM Mono', monospace; }
+
+  .bp-section { margin-bottom: 24px; }
+  .bp-section-title { font-family: 'DM Serif Display', serif; font-size: 16px; margin-bottom: 12px; padding-bottom: 8px; border-bottom: 1px solid var(--rule); }
+  .bp-item { display: flex; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--warm); font-size: 13px; line-height: 1.5; }
+  .bp-item:last-child { border-bottom: none; }
+  .bp-num { font-family: 'DM Mono', monospace; font-size: 10px; color: var(--muted); min-width: 20px; padding-top: 1px; }
+
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(26,26,24,0.6); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--paper); border-radius: 8px; padding: 28px; width: 540px; max-height: 85vh; overflow-y: auto; border: 1px solid var(--rule); }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 20px; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--rule); }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .empty-state { text-align: center; padding: 60px 0; color: var(--muted); }
+  .empty-icon { font-size: 36px; margin-bottom: 12px; }
+  .empty-title { font-size: 14px; font-weight: 600; margin-bottom: 6px; }
+  .empty-sub { font-size: 12px; }
+
+  code { font-family: 'DM Mono', monospace; font-size: 11px; background: var(--warm); padding: 1px 5px; border-radius: 2px; }
+  ::-webkit-scrollbar { width: 5px; }
+  ::-webkit-scrollbar-thumb { background: var(--rule); border-radius: 3px; }
+</style>
+</head>
+<body>
+
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <div class="wordmark">OADA<br>Mobility</div>
+    <div class="tagline">Operations Hub</div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section-label">Overview</div>
+    <div class="nav-item active" onclick="nav('dashboard',this)"><span class="nav-icon">◈</span> Dashboard</div>
+    <div class="nav-section-label">Jobs</div>
+    <div class="nav-item" onclick="nav('crm',this)"><span class="nav-icon">⟳</span> CRM / Pipeline</div>
+    <div class="nav-item" onclick="nav('active',this)"><span class="nav-icon">▶</span> Active Jobs</div>
+    <div class="nav-section-label">Operations</div>
+    <div class="nav-item" onclick="nav('checklists',this)"><span class="nav-icon">✓</span> Checklists</div>
+    <div class="nav-item" onclick="nav('tools',this)"><span class="nav-icon">⊞</span> Tools & Forms</div>
+    <div class="nav-item" onclick="nav('billing',this)"><span class="nav-icon">$</span> Billing Calc</div>
+    <div class="nav-item" onclick="nav('uploads',this)"><span class="nav-icon">↑</span> Uploads</div>
+    <div class="nav-section-label">Reference</div>
+    <div class="nav-item" onclick="nav('practices',this)"><span class="nav-icon">≡</span> Operating Standards</div>
+    <div class="nav-item" onclick="nav('vendors',this)"><span class="nav-icon">◉</span> Vendor Registry</div>
+  </nav>
+  <div class="sidebar-footer">OADA Mobility LLC · v2.0</div>
+</aside>
+
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="panel-title">Dashboard</div>
+    <div class="topbar-meta">Jim Weiss · OADA Mobility LLC<br>Senior Transition Management · Northern NJ</div>
+  </div>
+  <div class="content">
+
+    <!-- DASHBOARD -->
+    <div class="panel active" id="panel-dashboard">
+      <div class="stat-row">
+        <div class="stat-card">
+          <div class="stat-label">Pipeline</div>
+          <div class="stat-value" id="stat-pipeline">2</div>
+          <div class="stat-sub">Live referrals</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Active Jobs</div>
+          <div class="stat-value" id="stat-active">0</div>
+          <div class="stat-sub">Contracts signed</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Revenue MTD</div>
+          <div class="stat-value" id="stat-revenue">$0</div>
+          <div class="stat-sub">Pre-revenue phase</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">Vendors on File</div>
+          <div class="stat-value" id="stat-vendors">0</div>
+          <div class="stat-sub">Ins + W9 verified</div>
+        </div>
+      </div>
+      <div class="two-col">
+        <div>
+          <div class="section-header"><div class="section-title">Open Items</div></div>
+          <div class="card">
+            <div class="phase-list">
+              <div class="phase-item blocked"><div class="phase-dot"></div>Vendor Services Agreement — attorney review pending. Do not engage vendors.</div>
+              <div class="phase-item active"><div class="phase-dot"></div>Walkthrough scheduled — Referral 1 (Donate/Dispose). Tomorrow.</div>
+              <div class="phase-item active"><div class="phase-dot"></div>Referral 2 — response expected by weekend.</div>
+              <div class="phase-item"><div class="phase-dot"></div>Client Services Agreement — confirm attorney clearance status.</div>
+              <div class="phase-item"><div class="phase-dot"></div>Move all OADA files into Drive folder: OADA Mobility – Seniors.</div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div class="section-header">
+            <div class="section-title">Pipeline Snapshot</div>
+            <button class="btn btn-primary btn-sm" onclick="nav('crm', document.querySelector('[onclick*=crm]'))">View All</button>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Client</th><th>Stage</th><th>Next Action</th></tr></thead>
+              <tbody id="dashboard-crm"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CRM -->
+    <div class="panel" id="panel-crm">
+      <div class="section-header">
+        <div class="section-title">CRM / Pipeline</div>
+        <button class="btn btn-primary" onclick="openModal('add-client')">+ Add Client</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Client</th><th>Primary Contact</th><th>Service Type</th><th>Status</th><th>Revenue Est.</th><th>Next Action</th><th>Outcome</th><th></th>
+            </tr>
+          </thead>
+          <tbody id="crm-rows"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ACTIVE JOBS -->
+    <div class="panel" id="panel-active">
+      <div class="section-header">
+        <div class="section-title">Active Jobs</div>
+        <button class="btn btn-primary" onclick="openModal('add-job')">+ New Job</button>
+      </div>
+      <div class="empty-state" id="active-empty">
+        <div class="empty-icon">◎</div>
+        <div class="empty-title">No active jobs yet</div>
+        <div class="empty-sub">Jobs appear here once a contract is signed and initiation fee collected.</div>
+      </div>
+      <div id="active-jobs-list"></div>
+    </div>
+
+    <!-- CHECKLISTS -->
+    <div class="panel" id="panel-checklists">
+      <div class="section-header">
+        <div class="section-title">Project Checklists</div>
+        <div style="display:flex;gap:8px">
+          <button class="btn btn-outline btn-sm" onclick="filterChecklist('all')">All</button>
+          <button class="btn btn-outline btn-sm" onclick="filterChecklist('Organizer')">Organizer</button>
+          <button class="btn btn-outline btn-sm" onclick="filterChecklist('Mover')">Mover</button>
+        </div>
+      </div>
+      <div id="checklist-content"></div>
+    </div>
+
+    <!-- TOOLS & FORMS -->
+    <div class="panel" id="panel-tools">
+      <div class="section-header"><div class="section-title">Tools & Forms</div></div>
+      <div class="tools-grid">
+        <div class="tool-card">
+          <div class="tool-icon">📋</div>
+          <div class="tool-name">DPOC Designation Form</div>
+          <div class="tool-desc">Fillable Word doc — single point of contact, authority scope, communication requirements, dual signatures.</div>
+          <div class="tool-status ok">✓ Available</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">👤</div>
+          <div class="tool-name">Senior Move Profile</div>
+          <div class="tool-desc">Client intake Google Form — captures transition principal info, move details, and service needs.</div>
+          <div class="tool-status ok">✓ In Drive</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📄</div>
+          <div class="tool-name">Client Services Agreement</div>
+          <div class="tool-desc">Master client contract. Confirm attorney clearance status before use.</div>
+          <div class="tool-status pending">⚠ Confirm status</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🤝</div>
+          <div class="tool-name">Vendor Services Agreement</div>
+          <div class="tool-desc">Vendor contract. Attorney review pending. Do not use until cleared.</div>
+          <div class="tool-status pending">⚠ Pending review</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📬</div>
+          <div class="tool-name">RFI — Moving Services</div>
+          <div class="tool-desc">Google Form — request for information for moving vendor bids.</div>
+          <div class="tool-status ok">✓ In Drive</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🚛</div>
+          <div class="tool-name">RFI — Junk Removal & Cleanout</div>
+          <div class="tool-desc">Google Form — request for information for haul-away and cleanout vendors.</div>
+          <div class="tool-status ok">✓ In Drive</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🧹</div>
+          <div class="tool-name">Organizer Collaboration Inquiry</div>
+          <div class="tool-desc">Google Form — professional organizer vetting and collaboration intake.</div>
+          <div class="tool-status ok">✓ In Drive</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">📊</div>
+          <div class="tool-name">Project Checklist</div>
+          <div class="tool-desc">Organizer and mover phase checklists — Pre-Start through Closeout. View live in the Checklists tab.</div>
+          <div class="tool-status ok">✓ In Drive</div>
+        </div>
+        <div class="tool-card">
+          <div class="tool-icon">🗂</div>
+          <div class="tool-name">CRM Template</div>
+          <div class="tool-desc">Client tracking sheet — intake, status, revenue, next action, outcome, folder naming convention.</div>
+          <div class="tool-status ok">✓ In Drive</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BILLING CALC -->
+    <div class="panel" id="panel-billing">
+      <div class="section-header"><div class="section-title">Billing Calculator</div></div>
+      <div class="two-col">
+        <div>
+          <div class="billing-calc">
+            <div class="calc-row"><span>Space Plan Fee</span><span>$500.00</span></div>
+            <div class="calc-row">
+              <span>Credited toward initiation?</span>
+              <select id="credit-select" class="calc-input" style="width:70px" onchange="calcBilling()">
+                <option value="1">Yes</option><option value="0">No</option>
+              </select>
+            </div>
+            <div class="calc-row">
+              <span>Initiation Fee</span>
+              <input type="number" id="init-fee" class="calc-input" value="0" oninput="calcBilling()">
+            </div>
+            <div class="calc-row">
+              <span>Phase</span>
+              <select id="phase-select" class="calc-input" style="width:130px" onchange="calcBilling()">
+                <option>Phase 1</option><option>Phase 2</option><option>Phase 3</option>
+              </select>
+            </div>
+            <div class="calc-row">
+              <span>Vendor Bid</span>
+              <input type="number" id="vendor-bid" class="calc-input" value="0" oninput="calcBilling()">
+            </div>
+            <div class="calc-row">
+              <span>Vendor Actual</span>
+              <input type="number" id="vendor-actual" class="calc-input" value="0" oninput="calcBilling()">
+            </div>
+            <div class="calc-row">
+              <span>Lower of bid / actual</span>
+              <span id="lower-of">$0.00</span>
+            </div>
+            <div class="calc-row">
+              <span>PM Fee (8.5%)</span>
+              <span id="pm-fee">$0.00</span>
+            </div>
+            <div class="calc-row total">
+              <span>OADA Total (excl. vendor)</span>
+              <span id="oada-total">$0.00</span>
+            </div>
+            <div class="calc-row total" style="color:#fff">
+              <span>Client Total (incl. vendor)</span>
+              <span id="client-total">$0.00</span>
+            </div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);line-height:1.6;">Clients pay vendors directly. PM fee applied to lower of bid or actual charge. Space plan credited toward initiation if client proceeds.</div>
+        </div>
+        <div>
+          <div class="card">
+            <div class="card-title">Fee Structure Reference</div>
+            <div class="bp-item"><div class="bp-num">01</div><div><strong>Space Plan — $500</strong><br>Non-refundable. Credited toward initiation if client proceeds.</div></div>
+            <div class="bp-item"><div class="bp-num">02</div><div><strong>Initiation Fee</strong><br>Non-refundable. Set post-space-plan. Collected before project launch.</div></div>
+            <div class="bp-item"><div class="bp-num">03</div><div><strong>PM Fee — 8.5% per phase</strong><br>Applied to lower of vendor bid or actual. Auto-calculated in Vendor Tracker.</div></div>
+            <div class="bp-item"><div class="bp-num">04</div><div><strong>No referral fees</strong><br>OADA does not accept referral fees on the senior side.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- UPLOADS -->
+    <div class="panel" id="panel-uploads">
+      <div class="section-header"><div class="section-title">Data Collection Uploads</div></div>
+      <div class="upload-zone" id="upload-zone"
+        ondragover="event.preventDefault();this.classList.add('drag-over')"
+        ondragleave="this.classList.remove('drag-over')"
+        ondrop="handleDrop(event)"
+        onclick="document.getElementById('file-input').click()">
+        <div class="upload-icon">⬆</div>
+        <div class="upload-label">Drop files here or click to upload</div>
+        <div class="upload-sub">Walkthrough sheets, intake forms, vendor quotes, DOH clearance forms, space plans</div>
+        <input type="file" id="file-input" style="display:none" multiple onchange="handleFileSelect(event)">
+      </div>
+      <div class="section-header"><div class="section-title" style="font-size:14px">Uploaded Files</div></div>
+      <div class="file-list" id="file-list">
+        <div class="empty-state" style="padding:20px 0"><div style="font-size:12px">No files uploaded yet.</div></div>
+      </div>
+    </div>
+
+    <!-- OPERATING STANDARDS -->
+    <div class="panel" id="panel-practices">
+      <div class="section-header"><div class="section-title">Operating Standards</div></div>
+      <div class="two-col">
+        <div>
+          <div class="bp-section">
+            <div class="bp-section-title">Client Engagement</div>
+            <div class="bp-item"><div class="bp-num">01</div><div>Every engagement requires a single Designated Point of Contact. No exceptions. DPOC form signed before any substantive work begins.</div></div>
+            <div class="bp-item"><div class="bp-num">02</div><div>If the DPOC is not the Transition Principal, require written proof of decision-making authority (POA or written authorization).</div></div>
+            <div class="bp-item"><div class="bp-num">03</div><div>All communication is written only. Verbal decisions must be confirmed in writing to the DPOC before acting.</div></div>
+            <div class="bp-item"><div class="bp-num">04</div><div>Medications stay with the client or family at all times. Never with vendors. Document this in the communication log.</div></div>
+            <div class="bp-item"><div class="bp-num">05</div><div>NJ DOH and NY DOH medical clearance forms required where applicable. Confirm jurisdiction before scheduling.</div></div>
+          </div>
+          <div class="bp-section">
+            <div class="bp-section-title">Billing & Collections</div>
+            <div class="bp-item"><div class="bp-num">01</div><div>Collect initiation fee before project launch. Non-negotiable.</div></div>
+            <div class="bp-item"><div class="bp-num">02</div><div>PM fee is 8.5% against the lower of bid or actual vendor charge — never the higher.</div></div>
+            <div class="bp-item"><div class="bp-num">03</div><div>Space plan is non-refundable. Make this clear at intake, not at billing.</div></div>
+            <div class="bp-item"><div class="bp-num">04</div><div>Obtain written client approval before releasing final payment to any vendor.</div></div>
+          </div>
+        </div>
+        <div>
+          <div class="bp-section">
+            <div class="bp-section-title">Vendor Management</div>
+            <div class="bp-item"><div class="bp-num">01</div><div>Insurance certificate required from every vendor before engagement. Statutory limits minimum.</div></div>
+            <div class="bp-item"><div class="bp-num">02</div><div>W9 on file before any vendor receives payment. No exceptions.</div></div>
+            <div class="bp-item"><div class="bp-num">03</div><div>Vendor Services Agreement must be attorney-reviewed and signed. Currently pending — do not engage vendors under unsigned contract.</div></div>
+            <div class="bp-item"><div class="bp-num">04</div><div>Vendor categories: movers, organizers/sorters, junk haulers, estate sale companies, biohazard/hoarding remediation.</div></div>
+            <div class="bp-item"><div class="bp-num">05</div><div>Intervene immediately on any "this is extra" claims mid-job. Document scope changes before approving.</div></div>
+          </div>
+          <div class="bp-section">
+            <div class="bp-section-title">Project File Standards</div>
+            <div class="bp-item"><div class="bp-num">01</div><div>Every client gets a Drive folder named <code>[Last Name], [First Name] -- [Move Date]</code>.</div></div>
+            <div class="bp-item"><div class="bp-num">02</div><div>Folder contains: signed agreements, space measurements/photos, contents inventory, vendor contracts + COIs, master timeline, communication log, move-day runbook, final invoice.</div></div>
+            <div class="bp-item"><div class="bp-num">03</div><div>Communication log runs concurrently. Both travel together through project close.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- VENDORS -->
+    <div class="panel" id="panel-vendors">
+      <div class="section-header">
+        <div class="section-title">Vendor Registry</div>
+        <button class="btn btn-primary" onclick="openModal('add-vendor')">+ Add Vendor</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>Vendor</th><th>Category</th><th>Service Area</th><th>Contact</th><th>Insurance</th><th>W9</th><th>Agreement</th><th>Notes</th><th></th></tr></thead>
+          <tbody id="vendor-rows">
+            <tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px 0;font-size:13px;">No vendors in registry yet.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-add-client">
+  <div class="modal">
+    <div class="modal-title">Add Client / Prospect</div>
+    <div class="crm-form">
+      <div class="form-group"><label class="form-label">Client Name</label><input class="form-input" id="c-name" placeholder="Last, First"></div>
+      <div class="form-group"><label class="form-label">Primary Contact</label><input class="form-input" id="c-contact" placeholder="Name / relationship"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="c-phone" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Current Address</label><input class="form-input" id="c-addr" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Destination Facility</label><input class="form-input" id="c-dest" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Service Type</label>
+        <select class="form-select" id="c-service">
+          <option>Decision & Fit Planning</option>
+          <option>Managed Transition</option>
+          <option>Donate / Dispose</option>
+          <option>Estate Cleanout</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-select" id="c-status">
+          <option>Lead</option>
+          <option>Intake Scheduled</option>
+          <option>Awaiting Decision</option>
+          <option>Booked</option>
+          <option>In Progress</option>
+          <option>Completed</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Revenue Est.</label><input class="form-input" id="c-revenue" placeholder="e.g. $2,400"></div>
+      <div class="form-group"><label class="form-label">Move Date (est.)</label><input class="form-input" id="c-movedate" type="date"></div>
+      <div class="form-group"><label class="form-label">Next Action</label><input class="form-input" id="c-next" placeholder=""></div>
+      <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="c-notes" placeholder="Referral source, family dynamics, known complications..."></textarea></div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('add-client')">Cancel</button>
+      <button class="btn btn-primary" onclick="addClient()">Add to CRM</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-vendor">
+  <div class="modal">
+    <div class="modal-title">Add Vendor</div>
+    <div class="form-row" style="margin-bottom:14px">
+      <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="v-name" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Category</label>
+        <select class="form-select" id="v-cat">
+          <option>Movers</option><option>Organizers / Sorters</option><option>Junk Haulers</option><option>Estate Sale</option><option>Biohazard / Hoarding</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row" style="margin-bottom:14px">
+      <div class="form-group"><label class="form-label">Service Area</label><input class="form-input" id="v-area" placeholder="Counties / towns"></div>
+      <div class="form-group"><label class="form-label">Contact</label><input class="form-input" id="v-contact" placeholder="Name / phone / email"></div>
+    </div>
+    <div class="form-row" style="margin-bottom:14px">
+      <div class="form-group"><label class="form-label">Insurance on File</label><select class="form-select" id="v-ins"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      <div class="form-group"><label class="form-label">W9 on File</label><select class="form-select" id="v-w9"><option value="no">No</option><option value="yes">Yes</option></select></div>
+    </div>
+    <div class="form-group" style="margin-bottom:14px"><label class="form-label">Notes</label><input class="form-input" id="v-notes" placeholder="Performance notes, preferred status, etc."></div>
+    <div class="modal-actions">
+      <button class="btn btn-outline" onclick="closeModal('add-vendor')">Cancel</button>
+      <button class="btn btn-primary" onclick="addVendor()">Add Vendor</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ── State ──
+const state = {
+  clients: [],
+  vendors: [],
+  files: []
+};
+
+// ── Checklist data from Drive ──
+const ORGANIZER_CHECKLIST = [
+  {phase:'Pre-Start',cat:'Scope Definition',action:'Review written scope of work with organizer'},
+  {phase:'Pre-Start',cat:'Priority Setting',action:'Confirm client priorities (keep, donate, discard)'},
+  {phase:'Pre-Start',cat:'Decision Authority',action:'Confirm who has final decision authority'},
+  {phase:'Pre-Start',cat:'Timeline Control',action:'Confirm daily goals and completion targets'},
+  {phase:'Pre-Start',cat:'Protection',action:'Confirm surfaces and valuables protected before sorting begins'},
+  {phase:'Execution',cat:'Process Control',action:'Ensure organizer follows agreed decision framework'},
+  {phase:'Execution',cat:'Emotional Management',action:'Monitor pace to prevent fatigue-based decisions'},
+  {phase:'Execution',cat:'Inventory Control',action:'Track high-value or sentimental items removed from home'},
+  {phase:'Execution',cat:'Donation Oversight',action:'Verify donation inventory list and documentation'},
+  {phase:'Execution',cat:'Disposal Control',action:'Confirm disposal items align with client approvals'},
+  {phase:'Execution',cat:'Time Monitoring',action:'Track hours worked vs estimate'},
+  {phase:'Execution',cat:'Scope Enforcement',action:'Prevent scope creep beyond approved tasks'},
+  {phase:'Preparation',cat:'Labeling Standards',action:'Confirm labeling aligns with space plan'},
+  {phase:'Preparation',cat:'Essentials Control',action:'Confirm essentials box prepared and secured'},
+  {phase:'Preparation',cat:'Valuables Management',action:'Confirm jewelry/documents secured separately'},
+  {phase:'Preparation',cat:'Furniture Allocation',action:'Confirm selected furniture matches destination plan'},
+  {phase:'Delivery',cat:'Placement Oversight',action:'Ensure items placed per approved layout'},
+  {phase:'Delivery',cat:'Edit Adjustments',action:'Make real-time placement decisions with client approval'},
+  {phase:'Delivery',cat:'Unpacking Priorities',action:'Direct priority unpacking first (kitchen, bedroom, meds)'},
+  {phase:'Delivery',cat:'System Setup',action:'Confirm closets, drawers, and storage systems functional'},
+  {phase:'Closeout',cat:'Invoice Review',action:'Compare organizer invoice to agreed estimate'},
+  {phase:'Closeout',cat:'Outcome Review',action:'Confirm completion aligns with defined goals'},
+  {phase:'Closeout',cat:'Client Sign-Off',action:'Obtain written confirmation of satisfaction'},
+  {phase:'Closeout',cat:'Performance Notes',action:'Document organizer performance for future reference'},
+];
+
+const MOVER_CHECKLIST = [
+  {phase:'Pre-Start',cat:'Vendor Briefing',action:'Review written estimate line by line with crew lead'},
+  {phase:'Pre-Start',cat:'Vendor Briefing',action:'Confirm scope matches physical reality onsite'},
+  {phase:'Pre-Start',cat:'Compliance',action:'Verify COI and building compliance (if applicable)'},
+  {phase:'Pre-Start',cat:'Protection',action:'Confirm floor and surface protection installed'},
+  {phase:'Pre-Start',cat:'Risk Control',action:'Identify high-value / fragile items'},
+  {phase:'Pre-Start',cat:'Sequencing',action:'Confirm room-by-room packing order'},
+  {phase:'Pre-Start',cat:'Critical Items',action:'Separate medications, documents, essentials box'},
+  {phase:'Pre-Start',cat:'Chain of Command',action:'Establish single point of contact with crew lead'},
+  {phase:'Execution',cat:'Scope Enforcement',action:"Intervene on any 'this is extra' claims"},
+  {phase:'Execution',cat:'Change Management',action:'Document any scope change before approval'},
+  {phase:'Execution',cat:'Quality Control',action:'Inspect padding of furniture'},
+  {phase:'Execution',cat:'Quality Control',action:'Confirm hardware bagged and labeled'},
+  {phase:'Execution',cat:'Labeling',action:'Verify carton labeling accuracy and clarity'},
+  {phase:'Execution',cat:'Inventory',action:'Confirm inventory sheet accuracy during load'},
+  {phase:'Execution',cat:'Access Control',action:'Monitor building access timing compliance'},
+  {phase:'Execution',cat:'Vendor Conduct',action:'Ensure professional behavior and pace'},
+  {phase:'Execution',cat:'Time Monitoring',action:'Track labor hours vs estimate'},
+  {phase:'Load-Out',cat:'Final Walkthrough',action:'Check all closets, cabinets, storage areas empty'},
+  {phase:'Load-Out',cat:'Damage Prevention',action:'Inspect walls, floors, railings before departure'},
+  {phase:'Load-Out',cat:'Inventory Reconciliation',action:'Confirm total carton count'},
+  {phase:'Load-Out',cat:'Financial Control',action:'Review preliminary charges before truck departs'},
+  {phase:'Delivery',cat:'Condition Review',action:'Photograph high-value items before unload'},
+  {phase:'Delivery',cat:'Placement Accuracy',action:'Confirm furniture placed per space plan'},
+  {phase:'Delivery',cat:'Reassembly',action:'Inspect reassembled items for stability'},
+  {phase:'Delivery',cat:'Damage Inspection',action:'Identify and document any damages immediately'},
+  {phase:'Delivery',cat:'Essentials',action:'Confirm priority cartons opened first'},
+  {phase:'Delivery',cat:'Punch List',action:'Create issue list before crew leaves'},
+  {phase:'Closeout',cat:'Invoice Review',action:'Compare final invoice to original estimate'},
+  {phase:'Closeout',cat:'Accessorial Review',action:'Verify validity of extra charges'},
+  {phase:'Closeout',cat:'Client Approval',action:'Obtain written approval before final payment'},
+  {phase:'Closeout',cat:'Vendor Debrief',action:'Document performance notes'},
+  {phase:'Closeout',cat:'Final Report',action:'Deliver summary to client'},
+];
+
+// ── Nav ──
+function nav(id, el) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  document.getElementById('panel-' + id).classList.add('active');
+  if (el) el.classList.add('active');
+  const titles = { dashboard:'Dashboard', crm:'CRM / Pipeline', active:'Active Jobs', checklists:'Project Checklists', tools:'Tools & Forms', billing:'Billing Calculator', uploads:'Data Collection Uploads', practices:'Operating Standards', vendors:'Vendor Registry' };
+  document.getElementById('panel-title').textContent = titles[id] || id;
+  if (id === 'checklists') renderChecklists('all');
+}
+
+// ── CRM ──
+function addClient() {
+  const c = {
+    name: document.getElementById('c-name').value.trim(),
+    contact: document.getElementById('c-contact').value,
+    phone: document.getElementById('c-phone').value,
+    email: document.getElementById('c-email').value,
+    addr: document.getElementById('c-addr').value,
+    dest: document.getElementById('c-dest').value,
+    service: document.getElementById('c-service').value,
+    status: document.getElementById('c-status').value,
+    revenue: document.getElementById('c-revenue').value,
+    movedate: document.getElementById('c-movedate').value,
+    next: document.getElementById('c-next').value,
+    notes: document.getElementById('c-notes').value,
+  };
+  if (!c.name) return;
+  state.clients.push(c);
+  renderCRM();
+  updateDashboard();
+  closeModal('add-client');
+  ['c-name','c-contact','c-phone','c-email','c-addr','c-dest','c-revenue','c-next','c-notes'].forEach(id => document.getElementById(id).value = '');
+}
+
+const statusBadge = {
+  'Lead':'badge-muted','Intake Scheduled':'badge-steel','Awaiting Decision':'badge-amber',
+  'Booked':'badge-amber','In Progress':'badge-green','Completed':'badge-green'
+};
+
+function renderCRM() {
+  const tbody = document.getElementById('crm-rows');
+  if (!state.clients.length) {
+    tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:32px 0;font-size:13px;">No clients yet. Add a prospect to get started.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.clients.map((c,i) => `
+    <tr>
+      <td><strong>${c.name}</strong>${c.notes ? '<br><span style="font-size:11px;color:var(--muted)">' + c.notes.substring(0,60) + (c.notes.length>60?'…':'') + '</span>' : ''}</td>
+      <td>${c.contact || '—'}<br><span style="font-size:11px;color:var(--muted)">${c.phone || ''}</span></td>
+      <td>${c.service}</td>
+      <td><span class="badge ${statusBadge[c.status]||'badge-muted'}">${c.status}</span></td>
+      <td>${c.revenue || '—'}</td>
+      <td>${c.next || '—'}</td>
+      <td>—</td>
+      <td><button class="btn btn-outline btn-sm" onclick="removeClient(${i})">✕</button></td>
+    </tr>`).join('');
+  // dashboard snapshot
+  const dash = document.getElementById('dashboard-crm');
+  dash.innerHTML = state.clients.slice(0,5).map(c => `
+    <tr>
+      <td><strong>${c.name}</strong></td>
+      <td><span class="badge ${statusBadge[c.status]||'badge-muted'}">${c.status}</span></td>
+      <td>${c.next || '—'}</td>
+    </tr>`).join('');
+}
+
+function removeClient(i) { state.clients.splice(i,1); renderCRM(); updateDashboard(); }
+
+// ── Dashboard stats ──
+function updateDashboard() {
+  const pipeline = state.clients.filter(c => !['Completed'].includes(c.status)).length;
+  const active = state.clients.filter(c => c.status === 'In Progress').length;
+  const revenue = state.clients.filter(c => c.status === 'Completed')
+    .reduce((s,c) => s + (parseFloat((c.revenue||'0').replace(/[^0-9.]/g,''))||0), 0);
+  const verified = state.vendors.filter(v => v.ins === 'yes' && v.w9 === 'yes').length;
+  document.getElementById('stat-pipeline').textContent = pipeline || state.clients.length || 2;
+  document.getElementById('stat-active').textContent = active;
+  document.getElementById('stat-revenue').textContent = revenue ? '$' + revenue.toLocaleString() : '$0';
+  document.getElementById('stat-vendors').textContent = verified;
+}
+
+// ── Checklists ──
+let checkStates = {};
+function renderChecklists(filter) {
+  const el = document.getElementById('checklist-content');
+  const lists = filter === 'Organizer' ? [['Organizer Checklist', ORGANIZER_CHECKLIST]] :
+                filter === 'Mover'     ? [['Mover Checklist', MOVER_CHECKLIST]] :
+                [['Organizer Checklist', ORGANIZER_CHECKLIST], ['Mover Checklist', MOVER_CHECKLIST]];
+  el.innerHTML = lists.map(([title, rows]) => {
+    const phases = [...new Set(rows.map(r => r.phase))];
+    return `<div class="checklist-section">
+      <div class="checklist-title">${title}</div>
+      ${phases.map(phase => `
+        <div style="margin-bottom:12px">
+          <div style="font-family:'DM Mono',monospace;font-size:9px;letter-spacing:0.14em;text-transform:uppercase;color:var(--muted);margin-bottom:6px;padding-left:2px">${phase}</div>
+          <div class="checklist-table">
+            <table>
+              <thead><tr><th style="width:40px">Done</th><th>Task</th><th>Category</th><th>Notes</th><th>Fin. Impact</th></tr></thead>
+              <tbody>
+                ${rows.filter(r => r.phase === phase).map((r,i) => {
+                  const key = title + phase + i;
+                  return `<tr>
+                    <td style="text-align:center"><input type="checkbox" ${checkStates[key]?'checked':''} onchange="checkStates['${key}']=this.checked" style="cursor:pointer;width:14px;height:14px"></td>
+                    <td>${r.action}</td>
+                    <td><span class="phase-badge">${r.cat}</span></td>
+                    <td><input type="text" style="border:none;background:transparent;font-size:12px;width:100%;font-family:inherit" placeholder="—"></td>
+                    <td><input type="text" style="border:none;background:transparent;font-size:12px;width:80px;font-family:'DM Mono',monospace" placeholder="$0"></td>
+                  </tr>`;
+                }).join('')}
+              </tbody>
+            </table>
+          </div>
+        </div>`).join('')}
+    </div>`;
+  }).join('');
+}
+function filterChecklist(f) { renderChecklists(f); }
+
+// ── Billing ──
+function calcBilling() {
+  const init = parseFloat(document.getElementById('init-fee').value) || 0;
+  const bid = parseFloat(document.getElementById('vendor-bid').value) || 0;
+  const actual = parseFloat(document.getElementById('vendor-actual').value) || 0;
+  const credit = parseInt(document.getElementById('credit-select').value);
+  const lower = bid && actual ? Math.min(bid, actual) : (bid || actual);
+  const pm = lower * 0.085;
+  const initNet = credit ? Math.max(0, init - 500) : init;
+  const oadaTotal = 500 + initNet + pm;
+  document.getElementById('lower-of').textContent = '$' + lower.toFixed(2);
+  document.getElementById('pm-fee').textContent = '$' + pm.toFixed(2);
+  document.getElementById('oada-total').textContent = '$' + oadaTotal.toFixed(2);
+  document.getElementById('client-total').textContent = '$' + (oadaTotal + lower).toFixed(2);
+}
+
+// ── Vendors ──
+function addVendor() {
+  const v = {
+    name: document.getElementById('v-name').value.trim(),
+    cat: document.getElementById('v-cat').value,
+    area: document.getElementById('v-area').value,
+    contact: document.getElementById('v-contact').value,
+    ins: document.getElementById('v-ins').value,
+    w9: document.getElementById('v-w9').value,
+    notes: document.getElementById('v-notes').value,
+  };
+  if (!v.name) return;
+  state.vendors.push(v);
+  renderVendors();
+  updateDashboard();
+  closeModal('add-vendor');
+}
+
+function renderVendors() {
+  const tbody = document.getElementById('vendor-rows');
+  if (!state.vendors.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px 0;font-size:13px;">No vendors in registry yet.</td></tr>';
+    return;
+  }
+  tbody.innerHTML = state.vendors.map((v,i) => `
+    <tr>
+      <td><strong>${v.name}</strong></td>
+      <td>${v.cat}</td>
+      <td>${v.area || '—'}</td>
+      <td style="font-size:12px">${v.contact || '—'}</td>
+      <td><span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span></td>
+      <td><span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span></td>
+      <td><span class="badge badge-amber">Pending</span></td>
+      <td style="font-size:12px;color:var(--muted)">${v.notes || '—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="removeVendor(${i})">✕</button></td>
+    </tr>`).join('');
+}
+
+function removeVendor(i) { state.vendors.splice(i,1); renderVendors(); updateDashboard(); }
+
+// ── Uploads ──
+function handleDrop(e) {
+  e.preventDefault();
+  document.getElementById('upload-zone').classList.remove('drag-over');
+  addFiles(Array.from(e.dataTransfer.files));
+}
+function handleFileSelect(e) { addFiles(Array.from(e.target.files)); }
+function addFiles(files) {
+  const list = document.getElementById('file-list');
+  const empty = list.querySelector('.empty-state');
+  if (empty) list.innerHTML = '';
+  const icons = {PDF:'📄',DOCX:'📝',DOC:'📝',XLSX:'📊',XLS:'📊',JPG:'🖼',PNG:'🖼',JPEG:'🖼'};
+  files.forEach(f => {
+    const ext = f.name.split('.').pop().toUpperCase();
+    const size = f.size > 1048576 ? (f.size/1048576).toFixed(1)+' MB' : Math.round(f.size/1024)+' KB';
+    const item = document.createElement('div');
+    item.className = 'file-item';
+    item.innerHTML = `<span style="font-size:18px">${icons[ext]||'📁'}</span><span class="file-name">${f.name}</span><span class="file-meta">${ext} · ${size}</span><button class="btn btn-outline btn-sm" onclick="this.closest('.file-item').remove()">Remove</button>`;
+    list.appendChild(item);
+  });
+}
+
+// ── Modals ──
+function openModal(id) { document.getElementById('modal-'+id).classList.add('open'); }
+function closeModal(id) { document.getElementById('modal-'+id).classList.remove('open'); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
+
+// ── Init ──
+renderCRM();
+renderVendors();
+updateDashboard();
+</script>
+</body>
+</html>
