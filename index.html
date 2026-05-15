@@ -351,25 +351,66 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
           <div>
             <div class="card">
               <div class="card-title">Fee Summary</div>
-              <div class="billing-line"><span>Space Plan</span><span id="jb-space-plan">$500.00</span></div>
-              <div class="billing-line"><span>Initiation Fee</span>
-                <span><input type="number" id="jb-init-fee" style="width:100px;border:1px solid var(--rule);border-radius:4px;padding:3px 8px;font-size:12px;text-align:right" value="0" oninput="updateJobBilling()"></span>
+
+              <div class="billing-line">
+                <span>Space Plan</span>
+                <span style="display:flex;align-items:center;gap:8px">
+                  <select id="jb-space-plan-status" style="font-size:12px;padding:3px 8px;border:1px solid var(--rule);border-radius:4px" onchange="updateJobBilling()">
+                    <option value="charged">$500.00</option>
+                    <option value="waived">Waived</option>
+                  </select>
+                  <span id="jb-space-plan-display" style="font-family:'DM Mono',monospace;font-size:12px;min-width:60px;text-align:right">$500.00</span>
+                </span>
               </div>
-              <div class="billing-line"><span>Space Plan credited?</span>
+
+              <div class="billing-line">
+                <span>Initiation Fee</span>
+                <span style="display:flex;align-items:center;gap:8px">
+                  <select id="jb-init-status" style="font-size:12px;padding:3px 8px;border:1px solid var(--rule);border-radius:4px" onchange="updateJobBilling()">
+                    <option value="charged">Set Amount</option>
+                    <option value="waived">Waived</option>
+                  </select>
+                  <input type="number" id="jb-init-fee" style="width:80px;border:1px solid var(--rule);border-radius:4px;padding:3px 8px;font-size:12px;text-align:right" value="0" oninput="updateJobBilling()" placeholder="$0">
+                </span>
+              </div>
+
+              <div class="billing-line">
+                <span>Space Plan credited toward initiation?</span>
                 <select id="jb-credit" style="font-size:12px;padding:3px 8px;border:1px solid var(--rule);border-radius:4px" onchange="updateJobBilling()">
-                  <option value="1">Yes</option><option value="0">No</option>
+                  <option value="1">Yes</option>
+                  <option value="0">No</option>
                 </select>
               </div>
-              <div class="billing-line"><span>Total PM Fees (all phases)</span><span id="jb-pm-total">$0.00</span></div>
-              <div class="billing-line total"><span>OADA Total</span><span id="jb-oada-total">$500.00</span></div>
+
+              <div class="billing-line" style="background:var(--warm);padding:8px 12px;border-radius:4px;margin-top:4px">
+                <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">PM Fee Rate</span>
+                <span style="font-weight:600">8.5% (fixed)</span>
+              </div>
+
+              <div class="billing-line">
+                <span>Total PM Fees (all vendor phases)</span>
+                <span id="jb-pm-total" style="font-family:'DM Mono',monospace">$0.00</span>
+              </div>
+
+              <div class="billing-line total" style="margin-top:8px;padding-top:12px;border-top:2px solid var(--rule)">
+                <span>OADA Total</span>
+                <span id="jb-oada-total" style="font-family:'DM Serif Display',serif;font-size:20px">$0.00</span>
+              </div>
             </div>
             <button class="btn btn-primary btn-sm" onclick="saveJobBilling()">Save Billing</button>
           </div>
-          <div class="card">
-            <div class="card-title">Fee Structure Reference</div>
-            <div class="bp-item"><div class="bp-num">01</div><div><strong>Space Plan — $500</strong><br>Non-refundable. Credited toward initiation if client proceeds.</div></div>
-            <div class="bp-item"><div class="bp-num">02</div><div><strong>Initiation Fee</strong><br>Non-refundable. Set post-space-plan. Collected before project launch.</div></div>
-            <div class="bp-item"><div class="bp-num">03</div><div><strong>PM Fee — 8.5%</strong><br>Applied to lower of vendor bid or actual, per phase.</div></div>
+          <div>
+            <div class="card">
+              <div class="card-title">Fee Structure Reference</div>
+              <div class="bp-item"><div class="bp-num">01</div><div><strong>Space Plan — $500</strong><br>Non-refundable. Credited toward initiation if client proceeds. May be waived for referral accounts.</div></div>
+              <div class="bp-item"><div class="bp-num">02</div><div><strong>Initiation Fee</strong><br>Non-refundable. Set post-space-plan. Collected before project launch. May be waived for referral accounts.</div></div>
+              <div class="bp-item"><div class="bp-num">03</div><div><strong>PM Fee — 8.5% (fixed)</strong><br>Applied to lower of vendor bid or actual, per phase. Applies to all jobs regardless of referral status.</div></div>
+              <div class="bp-item"><div class="bp-num">04</div><div><strong>Waived fees</strong><br>Shown as Waived on all summaries so referral partners understand the standard value being extended to them.</div></div>
+            </div>
+            <div class="card" style="margin-top:0">
+              <div class="card-title">Vendor PM Fees by Phase</div>
+              <div id="jb-phase-breakdown" style="font-size:13px;color:var(--muted)">Assign vendors to see phase breakdown.</div>
+            </div>
           </div>
         </div>
       </div>
@@ -824,6 +865,8 @@ function renderJobDetail(id) {
   // Billing
   document.getElementById('jb-init-fee').value = c.initiationFee || 0;
   document.getElementById('jb-credit').value = c.spaceplanCredit !== undefined ? c.spaceplanCredit : 1;
+  if (c.spaceplanStatus) document.getElementById('jb-space-plan-status').value = c.spaceplanStatus;
+  if (c.initiationStatus) document.getElementById('jb-init-status').value = c.initiationStatus;
   renderJobVendors(id);
   renderJobNotes(id);
 }
@@ -973,24 +1016,65 @@ async function removeJobVendor(id) {
 }
 
 function updateJobBilling() {
-  const jv = jobVendors.filter(x=>x.clientId===currentClientId);
-  const totalPM = jv.reduce((s,v)=>s+parseFloat(v.pmFee||0),0);
-  const init = parseFloat(document.getElementById('jb-init-fee').value)||0;
-  const credit = parseInt(document.getElementById('jb-credit').value);
-  const initNet = credit?Math.max(0,init-500):init;
-  const oadaTotal = 500+initNet+totalPM;
-  document.getElementById('jb-pm-total').textContent = '$'+totalPM.toFixed(2);
-  document.getElementById('jb-oada-total').textContent = '$'+oadaTotal.toFixed(2);
+  const jv = jobVendors.filter(x => x.clientId === currentClientId);
+  const totalPM = jv.reduce((s,v) => s + parseFloat(v.pmFee||0), 0);
+
+  const spaceplanStatus = document.getElementById('jb-space-plan-status').value;
+  const initStatus      = document.getElementById('jb-init-status').value;
+  const initAmt         = parseFloat(document.getElementById('jb-init-fee').value) || 0;
+  const credit          = parseInt(document.getElementById('jb-credit').value);
+
+  const spaceplanAmt = spaceplanStatus === 'waived' ? 0 : 500;
+  const initNet      = initStatus === 'waived' ? 0 : (credit ? Math.max(0, initAmt - spaceplanAmt) : initAmt);
+  const oadaTotal    = spaceplanAmt + initNet + totalPM;
+
+  // Update display
+  const spDisp = document.getElementById('jb-space-plan-display');
+  if (spDisp) spDisp.textContent = spaceplanStatus === 'waived' ? 'Waived' : '$500.00';
+
+  const initInput = document.getElementById('jb-init-fee');
+  if (initStatus === 'waived') {
+    initInput.disabled = true;
+    initInput.style.opacity = '0.4';
+  } else {
+    initInput.disabled = false;
+    initInput.style.opacity = '1';
+  }
+
+  document.getElementById('jb-pm-total').textContent = '$' + totalPM.toFixed(2);
+  document.getElementById('jb-oada-total').textContent = '$' + oadaTotal.toFixed(2);
+
+  // Phase breakdown
+  const phases = ['Pre-Start','Execution','Preparation','Delivery','Closeout'];
+  const breakdown = document.getElementById('jb-phase-breakdown');
+  if (!jv.length) {
+    breakdown.innerHTML = 'Assign vendors to see phase breakdown.';
+    breakdown.style.color = 'var(--muted)';
+  } else {
+    breakdown.style.color = 'var(--ink)';
+    breakdown.innerHTML = phases.map(phase => {
+      const phaseVendors = jv.filter(v => v.phase === phase);
+      if (!phaseVendors.length) return '';
+      const phasePM = phaseVendors.reduce((s,v) => s + parseFloat(v.pmFee||0), 0);
+      return `<div class="billing-line" style="font-size:12px">
+        <span>${phase} (${phaseVendors.length} vendor${phaseVendors.length>1?'s':''})</span>
+        <span style="font-family:'DM Mono',monospace">$${phasePM.toFixed(2)}</span>
+      </div>`;
+    }).filter(Boolean).join('') ||
+    '<div style="color:var(--muted);font-size:12px">No phase data yet.</div>';
+  }
 }
 
 async function saveJobBilling() {
-  const c = clients.find(x=>x.id===currentClientId);
-  if(!c) return;
-  c.initiationFee = document.getElementById('jb-init-fee').value;
-  c.spaceplanCredit = document.getElementById('jb-credit').value;
-  setSyncStatus('syncing','Saving...');
-  try{ await apiCall({action:'saveClient',record:c}); setSyncStatus('ok','Saved'); }
-  catch(e){ setSyncStatus('error','Save failed'); }
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  c.initiationFee     = document.getElementById('jb-init-fee').value;
+  c.spaceplanCredit   = document.getElementById('jb-credit').value;
+  c.spaceplanStatus   = document.getElementById('jb-space-plan-status').value;
+  c.initiationStatus  = document.getElementById('jb-init-status').value;
+  setSyncStatus('syncing', 'Saving...');
+  try { await apiCall({ action: 'saveClient', record: c }); setSyncStatus('ok', 'Saved'); }
+  catch(e) { setSyncStatus('error', 'Save failed'); }
 }
 
 // ── Job Notes ─────────────────────────────────────────────────────────────────
