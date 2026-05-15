@@ -358,8 +358,19 @@
       <div class="form-group"><label class="form-label">Primary Contact</label><input class="form-input" id="c-contact" placeholder="Name / relationship"></div>
       <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="c-phone"></div>
       <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="c-email"></div>
-      <div class="form-group"><label class="form-label">Current Address</label><input class="form-input" id="c-addr"></div>
-      <div class="form-group"><label class="form-label">Destination Facility</label><input class="form-input" id="c-dest"></div>
+
+      <div class="form-group full"><label class="form-label">Current Address — Street</label><input class="form-input" id="c-addr-street" placeholder="Street address"></div>
+      <div class="form-group"><label class="form-label">Current City</label><input class="form-input" id="c-addr-city"></div>
+      <div class="form-group"><label class="form-label">Current State</label><input class="form-input" id="c-addr-state" placeholder="e.g. NJ"></div>
+      <div class="form-group"><label class="form-label">Current Zip</label><input class="form-input" id="c-addr-zip"></div>
+      <div class="form-group full" style="grid-column:4/5"></div>
+
+      <div class="form-group full"><label class="form-label">Destination Address — Street</label><input class="form-input" id="c-dest-street" placeholder="Street address"></div>
+      <div class="form-group"><label class="form-label">Destination City</label><input class="form-input" id="c-dest-city"></div>
+      <div class="form-group"><label class="form-label">Destination State</label><input class="form-input" id="c-dest-state" placeholder="e.g. FL"></div>
+      <div class="form-group"><label class="form-label">Destination Zip</label><input class="form-input" id="c-dest-zip"></div>
+      <div class="form-group full"><label class="form-label">Destination Facility (if applicable)</label><input class="form-input" id="c-dest-facility" placeholder="e.g. The Bristal at Livingston"></div>
+
       <div class="form-group"><label class="form-label">Service Type</label><select class="form-select" id="c-service"><option>Decision & Fit Planning</option><option>Managed Transition</option><option>Donate / Dispose</option><option>Estate Cleanout</option></select></div>
       <div class="form-group"><label class="form-label">Status</label><select class="form-select" id="c-status"><option>Lead</option><option>Intake Scheduled</option><option>Awaiting Decision</option><option>Booked</option><option>In Progress</option><option>Completed</option></select></div>
       <div class="form-group"><label class="form-label">Revenue Est.</label><input class="form-input" id="c-revenue" placeholder="e.g. $2,400"></div>
@@ -448,15 +459,44 @@ async function loadAll() {
 const statusBadge = {'Lead':'badge-muted','Intake Scheduled':'badge-steel','Awaiting Decision':'badge-amber','Booked':'badge-amber','In Progress':'badge-green','Completed':'badge-green'};
 
 async function addClient() {
-  const r = { name:document.getElementById('c-name').value.trim(), contact:document.getElementById('c-contact').value, phone:document.getElementById('c-phone').value, email:document.getElementById('c-email').value, addr:document.getElementById('c-addr').value, dest:document.getElementById('c-dest').value, service:document.getElementById('c-service').value, status:document.getElementById('c-status').value, revenue:document.getElementById('c-revenue').value, movedate:document.getElementById('c-movedate').value, next:document.getElementById('c-next').value, notes:document.getElementById('c-notes').value, assignedPM:'Jim Weiss' };
+  const r = {
+    name: document.getElementById('c-name').value.trim(),
+    contact: document.getElementById('c-contact').value,
+    phone: document.getElementById('c-phone').value,
+    email: document.getElementById('c-email').value,
+    addrStreet: document.getElementById('c-addr-street').value,
+    addrCity: document.getElementById('c-addr-city').value,
+    addrState: document.getElementById('c-addr-state').value,
+    addrZip: document.getElementById('c-addr-zip').value,
+    destStreet: document.getElementById('c-dest-street').value,
+    destCity: document.getElementById('c-dest-city').value,
+    destState: document.getElementById('c-dest-state').value,
+    destZip: document.getElementById('c-dest-zip').value,
+    destFacility: document.getElementById('c-dest-facility').value,
+    service: document.getElementById('c-service').value,
+    status: document.getElementById('c-status').value,
+    revenue: document.getElementById('c-revenue').value,
+    movedate: document.getElementById('c-movedate').value,
+    next: document.getElementById('c-next').value,
+    notes: document.getElementById('c-notes').value,
+    assignedPM: 'Jim Weiss'
+  };
   if (!r.name) return;
   closeModal('add-client');
   setSyncStatus('syncing', 'Saving...');
   try {
     const res = await apiCall({ action: 'saveClient', record: r });
-    r.id = res.id; clients.push(r); setSyncStatus('ok', 'Saved');
-  } catch(e) { setSyncStatus('error', 'Save failed'); }
-  ['c-name','c-contact','c-phone','c-email','c-addr','c-dest','c-revenue','c-next','c-notes'].forEach(id => document.getElementById(id).value = '');
+    if (res && res.id) {
+      r.id = res.id;
+      clients.push(r);
+      setSyncStatus('ok', 'Saved');
+    } else {
+      setSyncStatus('error', 'Save failed');
+    }
+  } catch(e) { setSyncStatus('error', 'Save failed: ' + e.message); }
+  ['c-name','c-contact','c-phone','c-email','c-addr-street','c-addr-city','c-addr-state','c-addr-zip',
+   'c-dest-street','c-dest-city','c-dest-state','c-dest-zip','c-dest-facility','c-revenue','c-next','c-notes']
+    .forEach(id => document.getElementById(id).value = '');
   renderCRM(); updateDashboard();
 }
 
