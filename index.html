@@ -600,15 +600,51 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
 </div>
 
 <div class="modal-overlay" id="modal-add-vendor">
-  <div class="modal modal-sm">
-    <div class="modal-title">Add Vendor</div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="v-name"></div><div class="form-group"><label class="form-label">Category</label><select class="form-select" id="v-cat"><option>Movers</option><option>Organizers / Sorters</option><option>Junk Haulers</option><option>Estate Sale</option><option>Biohazard / Hoarding</option></select></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Service Area</label><input class="form-input" id="v-area" placeholder="Counties / towns"></div><div class="form-group"><label class="form-label">Contact</label><input class="form-input" id="v-contact" placeholder="Name / phone / email"></div></div>
-    <div class="form-row"><div class="form-group"><label class="form-label">Insurance on File</label><select class="form-select" id="v-ins"><option value="no">No</option><option value="yes">Yes</option></select></div><div class="form-group"><label class="form-label">W9 on File</label><select class="form-select" id="v-w9"><option value="no">No</option><option value="yes">Yes</option></select></div></div>
-    <div class="form-group" style="margin-bottom:14px"><label class="form-label">Notes</label><input class="form-input" id="v-notes" placeholder="Performance notes, preferred status..."></div>
+  <div class="modal">
+    <div class="modal-title" id="vendor-modal-title">Add Vendor</div>
+    <div class="crm-form">
+      <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="v-name"></div>
+      <div class="form-group"><label class="form-label">Category</label>
+        <select class="form-select" id="v-cat">
+          <option>Movers</option>
+          <option>Organizers / Sorters</option>
+          <option>Junk Haulers</option>
+          <option>Estate Sale</option>
+          <option>Biohazard / Hoarding</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Service Area</label><input class="form-input" id="v-area" placeholder="Counties / towns"></div>
+
+      <div class="form-group"><label class="form-label">Primary Contact Name</label><input class="form-input" id="v-contact" placeholder="Full name"></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="v-phone" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="v-email" placeholder=""></div>
+
+      <div class="form-group full"><label class="form-label">Street Address</label><input class="form-input" id="v-addr-street" placeholder=""></div>
+      <div class="form-group"><label class="form-label">City</label><input class="form-input" id="v-addr-city"></div>
+      <div class="form-group"><label class="form-label">State</label><input class="form-input" id="v-addr-state" placeholder="e.g. NJ"></div>
+      <div class="form-group"><label class="form-label">Zip</label><input class="form-input" id="v-addr-zip"></div>
+
+      <div class="form-group"><label class="form-label">Insurance on File</label>
+        <select class="form-select" id="v-ins"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">W9 on File</label>
+        <select class="form-select" id="v-w9"><option value="no">No</option><option value="yes">Yes</option></select>
+      </div>
+      <div class="form-group"><label class="form-label">Agreement Status</label>
+        <select class="form-select" id="v-agreement">
+          <option value="pending">Pending</option>
+          <option value="signed">Signed</option>
+          <option value="na">N/A</option>
+        </select>
+      </div>
+
+      <div class="form-group full"><label class="form-label">Notes</label>
+        <textarea class="form-textarea" id="v-notes" placeholder="Performance notes, preferred status, specialties..."></textarea>
+      </div>
+    </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('add-vendor')">Cancel</button>
-      <button class="btn btn-primary" onclick="addVendor()">Add Vendor</button>
+      <button class="btn btn-primary" id="vendor-modal-save-btn" onclick="addVendor()">Add Vendor</button>
     </div>
   </div>
 </div>
@@ -1105,28 +1141,65 @@ function renderJobNotes(clientId) {
 
 // ── Vendors ───────────────────────────────────────────────────────────────────
 async function addVendor() {
-  const r = { name:document.getElementById('v-name').value.trim(), cat:document.getElementById('v-cat').value, area:document.getElementById('v-area').value, contact:document.getElementById('v-contact').value, ins:document.getElementById('v-ins').value, w9:document.getElementById('v-w9').value, notes:document.getElementById('v-notes').value };
-  if(!r.name) return;
+  const r = {
+    name: document.getElementById('v-name').value.trim(),
+    cat: document.getElementById('v-cat').value,
+    area: document.getElementById('v-area').value,
+    contact: document.getElementById('v-contact').value,
+    phone: document.getElementById('v-phone').value,
+    email: document.getElementById('v-email').value,
+    addrStreet: document.getElementById('v-addr-street').value,
+    addrCity: document.getElementById('v-addr-city').value,
+    addrState: document.getElementById('v-addr-state').value,
+    addrZip: document.getElementById('v-addr-zip').value,
+    ins: document.getElementById('v-ins').value,
+    w9: document.getElementById('v-w9').value,
+    agreement: document.getElementById('v-agreement').value,
+    notes: document.getElementById('v-notes').value
+  };
+  if (!r.name) return;
   closeModal('add-vendor');
   setSyncStatus('syncing','Saving...');
-  try{ const res=await apiCall({action:'saveVendor',record:r}); if(res&&res.id){ r.id=res.id; vendors.push(r); setSyncStatus('ok','Saved'); } else setSyncStatus('error','Save failed'); }
-  catch(e){ setSyncStatus('error','Save failed'); }
-  ['v-name','v-area','v-contact','v-notes'].forEach(id=>document.getElementById(id).value='');
+  try {
+    const res = await apiCall({ action:'saveVendor', record:r });
+    if (res && res.id) { r.id = res.id; vendors.push(r); setSyncStatus('ok','Saved'); }
+    else setSyncStatus('error','Save failed');
+  } catch(e) { setSyncStatus('error','Save failed'); }
+  ['v-name','v-area','v-contact','v-phone','v-email','v-addr-street','v-addr-city','v-addr-state','v-addr-zip','v-notes']
+    .forEach(id => document.getElementById(id).value = '');
   renderVendors(); updateDashboard();
 }
 
 async function removeVendor(id, e) {
   e.stopPropagation();
   setSyncStatus('syncing','Deleting...');
-  try{ await apiCall({action:'deleteVendor',id}); vendors=vendors.filter(v=>v.id!==id); setSyncStatus('ok','Deleted'); }
-  catch(e){ setSyncStatus('error','Delete failed'); }
+  try { await apiCall({action:'deleteVendor',id}); vendors=vendors.filter(v=>v.id!==id); setSyncStatus('ok','Deleted'); }
+  catch(e) { setSyncStatus('error','Delete failed'); }
   renderVendors(); updateDashboard();
 }
 
 function renderVendors() {
-  const tbody=document.getElementById('vendor-rows');
-  if(!vendors.length){ tbody.innerHTML='<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px;font-size:13px">No vendors yet.</td></tr>'; return; }
-  tbody.innerHTML=vendors.map(v=>`<tr><td><strong>${v.name}</strong></td><td>${v.cat||'—'}</td><td>${v.area||'—'}</td><td style="font-size:12px">${v.contact||'—'}</td><td><span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span></td><td><span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span></td><td><span class="badge badge-amber">Pending</span></td><td style="font-size:12px;color:var(--muted)">${v.notes||'—'}</td><td><button class="btn btn-outline btn-sm" onclick="removeVendor('${v.id}',event)">✕</button></td></tr>`).join('');
+  const tbody = document.getElementById('vendor-rows');
+  if (!vendors.length) {
+    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px;font-size:13px">No vendors yet.</td></tr>';
+    return;
+  }
+  const agBadge = { signed:'badge-green', pending:'badge-amber', na:'badge-muted' };
+  tbody.innerHTML = vendors.map(v => `
+    <tr>
+      <td><strong>${v.name}</strong>${v.addrCity?`<br><span style="font-size:11px;color:var(--muted)">${[v.addrCity,v.addrState].filter(Boolean).join(', ')}</span>`:''}</td>
+      <td>${v.cat||'—'}</td>
+      <td>${v.area||'—'}</td>
+      <td>${v.contact||'—'}<br>
+        <span style="font-size:11px;color:var(--muted)">${v.phone||''}</span><br>
+        <span style="font-size:11px;color:var(--muted)">${v.email||''}</span>
+      </td>
+      <td><span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span></td>
+      <td><span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span></td>
+      <td><span class="badge ${agBadge[v.agreement]||'badge-muted'}">${v.agreement==='signed'?'Signed':v.agreement==='na'?'N/A':'Pending'}</span></td>
+      <td style="font-size:12px;color:var(--muted);max-width:160px">${v.notes||'—'}</td>
+      <td><button class="btn btn-outline btn-sm" onclick="removeVendor('${v.id}',event)">✕</button></td>
+    </tr>`).join('');
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
