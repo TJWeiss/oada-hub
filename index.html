@@ -563,6 +563,62 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
       </div>
     </div>
 
+    <!-- VENDOR DETAIL -->
+    <div class="panel" id="panel-vendor-detail">
+      <div class="job-detail-header">
+        <div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:4px;cursor:pointer" onclick="nav('vendors',document.querySelector('[onclick*=vendors]'))">← Back to Vendor Registry</div>
+          <div class="job-detail-name" id="vd-name">Vendor Name</div>
+          <div class="job-detail-meta" id="vd-meta"></div>
+        </div>
+        <div style="display:flex;gap:10px">
+          <button class="btn btn-outline btn-sm" onclick="openEditVendor()">Edit Info</button>
+          <button class="btn btn-outline btn-sm" id="vd-email-btn" onclick="">Email</button>
+        </div>
+      </div>
+
+      <div class="job-tabs">
+        <div class="job-tab active" onclick="vendorTab('info',this)">Info</div>
+        <div class="job-tab" onclick="vendorTab('jobs',this)">Job History</div>
+      </div>
+
+      <!-- Info tab -->
+      <div class="job-tab-panel active" id="vt-info">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Contact</div>
+            <div id="vd-contact-info" style="font-size:13px;line-height:2"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Address</div>
+            <div id="vd-address" style="font-size:13px;line-height:2"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Compliance</div>
+            <div id="vd-compliance" style="font-size:13px;line-height:2"></div>
+          </div>
+          <div class="card">
+            <div class="card-title">Notes</div>
+            <div id="vd-notes" style="font-size:13px;line-height:1.6"></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Jobs tab -->
+      <div class="job-tab-panel" id="vt-jobs">
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Client</th><th>Phase</th><th>Bid</th><th>Actual</th><th>PM Fee</th><th>Status</th></tr></thead>
+            <tbody id="vd-job-rows"><tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;font-size:13px">No job history yet.</td></tr></tbody>
+          </table>
+        </div>
+        <div class="card" style="margin-top:8px">
+          <div class="card-title">Lifetime Totals</div>
+          <div id="vd-totals" style="font-size:13px;color:var(--muted)">—</div>
+        </div>
+      </div>
+    </div>
+
   </div>
 </main>
 
@@ -944,6 +1000,14 @@ function jobTab(id, el) {
   if (id === 'notes') renderJobNotes(currentClientId);
 }
 
+function vendorTab(id, el) {
+  document.querySelectorAll('#panel-vendor-detail .job-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('#panel-vendor-detail .job-tab-panel').forEach(p => p.classList.remove('active'));
+  document.getElementById('vt-' + id).classList.add('active');
+  el.classList.add('active');
+  if (id === 'jobs') renderVendorJobs(currentVendorId);
+}
+
 // ── Job Checklists ────────────────────────────────────────────────────────────
 const ORGANIZER_CL=[{phase:'Pre-Start',cat:'Scope Definition',action:'Review written scope of work with organizer'},{phase:'Pre-Start',cat:'Priority Setting',action:'Confirm client priorities (keep, donate, discard)'},{phase:'Pre-Start',cat:'Decision Authority',action:'Confirm who has final decision authority'},{phase:'Pre-Start',cat:'Timeline Control',action:'Confirm daily goals and completion targets'},{phase:'Pre-Start',cat:'Protection',action:'Confirm surfaces and valuables protected before sorting begins'},{phase:'Execution',cat:'Process Control',action:'Ensure organizer follows agreed decision framework'},{phase:'Execution',cat:'Emotional Management',action:'Monitor pace to prevent fatigue-based decisions'},{phase:'Execution',cat:'Inventory Control',action:'Track high-value or sentimental items removed from home'},{phase:'Execution',cat:'Donation Oversight',action:'Verify donation inventory list and documentation'},{phase:'Execution',cat:'Disposal Control',action:'Confirm disposal items align with client approvals'},{phase:'Execution',cat:'Time Monitoring',action:'Track hours worked vs estimate'},{phase:'Execution',cat:'Scope Enforcement',action:'Prevent scope creep beyond approved tasks'},{phase:'Preparation',cat:'Labeling Standards',action:'Confirm labeling aligns with space plan'},{phase:'Preparation',cat:'Essentials Control',action:'Confirm essentials box prepared and secured'},{phase:'Preparation',cat:'Valuables Management',action:'Confirm jewelry/documents secured separately'},{phase:'Preparation',cat:'Furniture Allocation',action:'Confirm selected furniture matches destination plan'},{phase:'Delivery',cat:'Placement Oversight',action:'Ensure items placed per approved layout'},{phase:'Delivery',cat:'Edit Adjustments',action:'Make real-time placement decisions with client approval'},{phase:'Delivery',cat:'Unpacking Priorities',action:'Direct priority unpacking first (kitchen, bedroom, meds)'},{phase:'Delivery',cat:'System Setup',action:'Confirm closets, drawers, and storage systems functional'},{phase:'Closeout',cat:'Invoice Review',action:'Compare organizer invoice to agreed estimate'},{phase:'Closeout',cat:'Outcome Review',action:'Confirm completion aligns with defined goals'},{phase:'Closeout',cat:'Client Sign-Off',action:'Obtain written confirmation of satisfaction'},{phase:'Closeout',cat:'Performance Notes',action:'Document organizer performance for future reference'}];
 const MOVER_CL=[{phase:'Pre-Start',cat:'Vendor Briefing',action:'Review written estimate line by line with crew lead'},{phase:'Pre-Start',cat:'Vendor Briefing',action:'Confirm scope matches physical reality onsite'},{phase:'Pre-Start',cat:'Compliance',action:'Verify COI and building compliance (if applicable)'},{phase:'Pre-Start',cat:'Protection',action:'Confirm floor and surface protection installed'},{phase:'Pre-Start',cat:'Risk Control',action:'Identify high-value / fragile items'},{phase:'Pre-Start',cat:'Sequencing',action:'Confirm room-by-room packing order'},{phase:'Pre-Start',cat:'Critical Items',action:'Separate medications, documents, essentials box'},{phase:'Pre-Start',cat:'Chain of Command',action:'Establish single point of contact with crew lead'},{phase:'Execution',cat:'Scope Enforcement',action:"Intervene on any 'this is extra' claims"},{phase:'Execution',cat:'Change Management',action:'Document any scope change before approval'},{phase:'Execution',cat:'Quality Control',action:'Inspect padding of furniture'},{phase:'Execution',cat:'Quality Control',action:'Confirm hardware bagged and labeled'},{phase:'Execution',cat:'Labeling',action:'Verify carton labeling accuracy and clarity'},{phase:'Execution',cat:'Inventory',action:'Confirm inventory sheet accuracy during load'},{phase:'Execution',cat:'Access Control',action:'Monitor building access timing compliance'},{phase:'Execution',cat:'Vendor Conduct',action:'Ensure professional behavior and pace'},{phase:'Execution',cat:'Time Monitoring',action:'Track labor hours vs estimate'},{phase:'Load-Out',cat:'Final Walkthrough',action:'Check all closets, cabinets, storage areas empty'},{phase:'Load-Out',cat:'Damage Prevention',action:'Inspect walls, floors, railings before departure'},{phase:'Load-Out',cat:'Inventory Reconciliation',action:'Confirm total carton count'},{phase:'Load-Out',cat:'Financial Control',action:'Review preliminary charges before truck departs'},{phase:'Delivery',cat:'Condition Review',action:'Photograph high-value items before unload'},{phase:'Delivery',cat:'Placement Accuracy',action:'Confirm furniture placed per space plan'},{phase:'Delivery',cat:'Reassembly',action:'Inspect reassembled items for stability'},{phase:'Delivery',cat:'Damage Inspection',action:'Identify and document any damages immediately'},{phase:'Delivery',cat:'Essentials',action:'Confirm priority cartons opened first'},{phase:'Delivery',cat:'Punch List',action:'Create issue list before crew leaves'},{phase:'Closeout',cat:'Invoice Review',action:'Compare final invoice to original estimate'},{phase:'Closeout',cat:'Accessorial Review',action:'Verify validity of extra charges'},{phase:'Closeout',cat:'Client Approval',action:'Obtain written approval before final payment'},{phase:'Closeout',cat:'Vendor Debrief',action:'Document performance notes'},{phase:'Closeout',cat:'Final Report',action:'Deliver summary to client'}];
@@ -1158,13 +1222,23 @@ async function addVendor() {
     notes: document.getElementById('v-notes').value
   };
   if (!r.name) return;
+  const isEdit = !!editingVendor;
+  if (isEdit) r.id = editingVendor.id;
   closeModal('add-vendor');
   setSyncStatus('syncing','Saving...');
   try {
     const res = await apiCall({ action:'saveVendor', record:r });
-    if (res && res.id) { r.id = res.id; vendors.push(r); setSyncStatus('ok','Saved'); }
-    else setSyncStatus('error','Save failed');
+    if (res && res.id) {
+      r.id = res.id;
+      if (isEdit) { const idx = vendors.findIndex(x=>x.id===r.id); if(idx>=0) vendors[idx]=r; }
+      else vendors.push(r);
+      setSyncStatus('ok','Saved');
+      if (currentVendorId === r.id) renderVendorDetail(r.id);
+    } else setSyncStatus('error','Save failed');
   } catch(e) { setSyncStatus('error','Save failed'); }
+  editingVendor = null;
+  document.getElementById('vendor-modal-title').textContent = 'Add Vendor';
+  document.getElementById('vendor-modal-save-btn').textContent = 'Add Vendor';
   ['v-name','v-area','v-contact','v-phone','v-email','v-addr-street','v-addr-city','v-addr-state','v-addr-zip','v-notes']
     .forEach(id => document.getElementById(id).value = '');
   renderVendors(); updateDashboard();
@@ -1172,6 +1246,7 @@ async function addVendor() {
 
 async function removeVendor(id, e) {
   e.stopPropagation();
+  if (!confirm('Remove this vendor?')) return;
   setSyncStatus('syncing','Deleting...');
   try { await apiCall({action:'deleteVendor',id}); vendors=vendors.filter(v=>v.id!==id); setSyncStatus('ok','Deleted'); }
   catch(e) { setSyncStatus('error','Delete failed'); }
@@ -1186,13 +1261,13 @@ function renderVendors() {
   }
   const agBadge = { signed:'badge-green', pending:'badge-amber', na:'badge-muted' };
   tbody.innerHTML = vendors.map(v => `
-    <tr>
+    <tr class="tr-clickable" onclick="openVendorDetail('${v.id}')">
       <td><strong>${v.name}</strong>${v.addrCity?`<br><span style="font-size:11px;color:var(--muted)">${[v.addrCity,v.addrState].filter(Boolean).join(', ')}</span>`:''}</td>
       <td>${v.cat||'—'}</td>
       <td>${v.area||'—'}</td>
       <td>${v.contact||'—'}<br>
-        <span style="font-size:11px;color:var(--muted)">${v.phone||''}</span><br>
-        <span style="font-size:11px;color:var(--muted)">${v.email||''}</span>
+        ${v.phone?`<span style="font-size:11px;color:var(--muted)">${v.phone}</span><br>`:''}
+        ${v.email?`<a href="mailto:${v.email}" style="font-size:11px;color:var(--accent)" onclick="event.stopPropagation()">${v.email}</a>`:''}
       </td>
       <td><span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span></td>
       <td><span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span></td>
@@ -1200,6 +1275,113 @@ function renderVendors() {
       <td style="font-size:12px;color:var(--muted);max-width:160px">${v.notes||'—'}</td>
       <td><button class="btn btn-outline btn-sm" onclick="removeVendor('${v.id}',event)">✕</button></td>
     </tr>`).join('');
+}
+
+// ── Vendor Detail ─────────────────────────────────────────────────────────────
+let currentVendorId = null;
+let editingVendor = null;
+
+function openVendorDetail(id) {
+  currentVendorId = id;
+  renderVendorDetail(id);
+  nav('vendor-detail', null);
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+}
+
+function renderVendorDetail(id) {
+  const v = vendors.find(x => x.id === id);
+  if (!v) return;
+  document.getElementById('vd-name').textContent = v.name;
+  document.getElementById('vd-meta').textContent = [v.cat, v.area].filter(Boolean).join(' · ');
+
+  // Email button
+  const emailBtn = document.getElementById('vd-email-btn');
+  if (v.email) {
+    emailBtn.onclick = () => window.location.href = 'mailto:' + v.email;
+    emailBtn.textContent = 'Email ' + v.contact;
+    emailBtn.style.opacity = '1';
+  } else {
+    emailBtn.onclick = null;
+    emailBtn.textContent = 'No Email on File';
+    emailBtn.style.opacity = '0.4';
+  }
+
+  // Contact info
+  document.getElementById('vd-contact-info').innerHTML = [
+    v.contact ? `<strong>${v.contact}</strong>` : '',
+    v.phone   ? `📞 <a href="tel:${v.phone}" style="color:var(--accent)">${v.phone}</a>` : '',
+    v.email   ? `✉ <a href="mailto:${v.email}" style="color:var(--accent)">${v.email}</a>` : ''
+  ].filter(Boolean).join('<br>') || '—';
+
+  // Address
+  document.getElementById('vd-address').innerHTML = [
+    v.addrStreet,
+    [v.addrCity, v.addrState, v.addrZip].filter(Boolean).join(', ')
+  ].filter(Boolean).join('<br>') || '—';
+
+  // Compliance
+  const agBadge = { signed:'badge-green', pending:'badge-amber', na:'badge-muted' };
+  const agLabel = v.agreement==='signed'?'Signed':v.agreement==='na'?'N/A':'Pending';
+  document.getElementById('vd-compliance').innerHTML = `
+    Insurance: <span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span><br>
+    W9: <span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span><br>
+    Agreement: <span class="badge ${agBadge[v.agreement]||'badge-muted'}">${agLabel}</span>
+  `;
+
+  // Notes
+  document.getElementById('vd-notes').textContent = v.notes || '—';
+
+  // Job history
+  renderVendorJobs(id);
+}
+
+function renderVendorJobs(vendorId) {
+  const jv = jobVendors.filter(x => x.vendorId === vendorId);
+  const tbody = document.getElementById('vd-job-rows');
+  if (!jv.length) {
+    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;font-size:13px">No job history yet.</td></tr>';
+    document.getElementById('vd-totals').innerHTML = '—';
+    return;
+  }
+  tbody.innerHTML = jv.map(j => {
+    const client = clients.find(c => c.id === j.clientId);
+    return `<tr class="tr-clickable" onclick="openJobDetail('${j.clientId}')">
+      <td><strong>${client ? client.name : '—'}</strong></td>
+      <td>${j.phase||'—'}</td>
+      <td>$${parseFloat(j.bid||0).toFixed(2)}</td>
+      <td>$${parseFloat(j.actual||0).toFixed(2)}</td>
+      <td><strong>$${parseFloat(j.pmFee||0).toFixed(2)}</strong></td>
+      <td><span class="badge ${j.status==='Complete'?'badge-green':j.status==='In Progress'?'badge-amber':'badge-muted'}">${j.status||'—'}</span></td>
+    </tr>`;
+  }).join('');
+
+  const totalBid    = jv.reduce((s,j) => s + parseFloat(j.bid||0), 0);
+  const totalActual = jv.reduce((s,j) => s + parseFloat(j.actual||0), 0);
+  const totalPM     = jv.reduce((s,j) => s + parseFloat(j.pmFee||0), 0);
+  document.getElementById('vd-totals').innerHTML = `
+    <span style="margin-right:24px">Jobs: <strong>${jv.length}</strong></span>
+    <span style="margin-right:24px">Total Billed: <strong>$${totalActual.toFixed(2)}</strong></span>
+    <span>Total PM Fees: <strong>$${totalPM.toFixed(2)}</strong></span>
+  `;
+}
+
+function openEditVendor() {
+  const v = vendors.find(x => x.id === currentVendorId);
+  if (!v) return;
+  editingVendor = v;
+  document.getElementById('vendor-modal-title').textContent = 'Edit Vendor';
+  document.getElementById('vendor-modal-save-btn').textContent = 'Save Changes';
+  const fields = {
+    'v-name':v.name,'v-area':v.area,'v-contact':v.contact,'v-phone':v.phone,
+    'v-email':v.email,'v-addr-street':v.addrStreet,'v-addr-city':v.addrCity,
+    'v-addr-state':v.addrState,'v-addr-zip':v.addrZip,'v-notes':v.notes
+  };
+  Object.entries(fields).forEach(([id,val]) => { const el=document.getElementById(id); if(el) el.value=val||''; });
+  document.getElementById('v-cat').value = v.cat || 'Movers';
+  document.getElementById('v-ins').value = v.ins || 'no';
+  document.getElementById('v-w9').value  = v.w9  || 'no';
+  document.getElementById('v-agreement').value = v.agreement || 'pending';
+  openModal('add-vendor');
 }
 
 // ── Dashboard ─────────────────────────────────────────────────────────────────
@@ -1236,7 +1418,7 @@ function nav(id, el) {
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('panel-'+id).classList.add('active');
   if(el) el.classList.add('active');
-  const titles={dashboard:'Dashboard',crm:'CRM / Pipeline','job-detail':'Job Detail',active:'Active Jobs',checklists:'Project Checklists',tools:'Tools & Forms',billing:'Billing Calculator',uploads:'Data Collection Uploads',practices:'Operating Standards',vendors:'Vendor Registry'};
+  const titles={dashboard:'Dashboard',crm:'CRM / Pipeline','job-detail':'Job Detail',active:'Active Jobs',checklists:'Project Checklists',tools:'Tools & Forms',billing:'Billing Calculator',uploads:'Data Collection Uploads',practices:'Operating Standards',vendors:'Vendor Registry','vendor-detail':'Vendor Detail'};
   document.getElementById('panel-title').textContent=titles[id]||id;
   if(id==='checklists') renderChecklists('all');
 }
