@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OADA Mobility — Project Status</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1a18;
+    --paper: #f5f2ec;
+    --warm: #e8e2d6;
+    --accent: #8b6f47;
+    --accent-light: #c4a882;
+    --muted: #9a9488;
+    --success: #4a7c59;
+    --pending: #8b6f47;
+    --upcoming: #c4bdb4;
+    --rule: #d4cfc6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: 'DM Mono', monospace;
+    font-weight: 300;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* ── HEADER ── */
+  header {
+    border-bottom: 1px solid var(--rule);
+    padding: 24px 40px;
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+  }
+
+  .logo-word {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 28px;
+    letter-spacing: 0.12em;
+    color: var(--ink);
+  }
+
+  .logo-word span {
+    color: var(--accent);
+  }
+
+  .logo-sub {
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── MAIN ── */
+  main {
+    flex: 1;
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 60px 20px;
+  }
+
+  .container {
+    width: 100%;
+    max-width: 640px;
+  }
+
+  /* ── LOGIN ── */
+  #login-view {
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .login-heading {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 300;
+    font-size: 36px;
+    letter-spacing: 0.04em;
+    margin-bottom: 8px;
+    color: var(--ink);
+  }
+
+  .login-sub {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 48px;
+  }
+
+  .field-group {
+    margin-bottom: 28px;
+  }
+
+  label {
+    display: block;
+    font-size: 10px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+  }
+
+  input {
+    width: 100%;
+    background: transparent;
+    border: none;
+    border-bottom: 1px solid var(--rule);
+    padding: 10px 0;
+    font-family: 'DM Mono', monospace;
+    font-size: 15px;
+    font-weight: 300;
+    color: var(--ink);
+    outline: none;
+    transition: border-color 0.2s;
+    letter-spacing: 0.06em;
+  }
+
+  input:focus { border-bottom-color: var(--accent); }
+  input::placeholder { color: var(--upcoming); }
+
+  .btn {
+    margin-top: 40px;
+    background: var(--ink);
+    color: var(--paper);
+    border: none;
+    padding: 14px 40px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background 0.2s;
+    width: 100%;
+  }
+
+  .btn:hover { background: var(--accent); }
+  .btn:disabled { background: var(--upcoming); cursor: not-allowed; }
+
+  .error-msg {
+    margin-top: 20px;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    color: #a05050;
+    text-align: center;
+    min-height: 18px;
+  }
+
+  /* ── PORTAL ── */
+  #portal-view {
+    display: none;
+    animation: fadeUp 0.4s ease both;
+  }
+
+  .portal-meta {
+    margin-bottom: 48px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--rule);
+  }
+
+  .client-name {
+    font-family: 'Cormorant Garamond', serif;
+    font-weight: 400;
+    font-size: 32px;
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+
+  .project-detail {
+    font-size: 11px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 4px;
+  }
+
+  /* ── PHASE TIMELINE ── */
+  .timeline-heading {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 28px;
+  }
+
+  .phase-list {
+    list-style: none;
+    position: relative;
+  }
+
+  .phase-list::before {
+    content: '';
+    position: absolute;
+    left: 11px;
+    top: 4px;
+    bottom: 4px;
+    width: 1px;
+    background: var(--rule);
+  }
+
+  .phase-item {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .phase-dot {
+    width: 23px;
+    height: 23px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-top: 1px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .phase-dot.done {
+    background: var(--success);
+    border: 2px solid var(--success);
+  }
+
+  .phase-dot.done::after {
+    content: '';
+    width: 6px;
+    height: 10px;
+    border-right: 1.5px solid #fff;
+    border-bottom: 1.5px solid #fff;
+    transform: rotate(45deg) translate(-1px, -1px);
+    display: block;
+  }
+
+  .phase-dot.active {
+    background: var(--paper);
+    border: 2px solid var(--accent);
+    animation: pulse 2.5s ease-in-out infinite;
+  }
+
+  .phase-dot.active::after {
+    content: '';
+    width: 7px;
+    height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+  }
+
+  .phase-dot.upcoming {
+    background: var(--paper);
+    border: 1px solid var(--rule);
+  }
+
+  .phase-body { flex: 1; padding-top: 2px; }
+
+  .phase-name {
+    font-size: 13px;
+    letter-spacing: 0.08em;
+    font-weight: 400;
+    margin-bottom: 4px;
+  }
+
+  .phase-name.done { color: var(--muted); }
+  .phase-name.active { color: var(--ink); }
+  .phase-name.upcoming { color: var(--upcoming); }
+
+  .phase-status-label {
+    font-size: 9px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .phase-status-label.done { color: var(--success); }
+  .phase-status-label.active { color: var(--accent); }
+  .phase-status-label.upcoming { color: var(--upcoming); }
+
+  .phase-note {
+    font-size: 12px;
+    line-height: 1.6;
+    color: var(--muted);
+    font-family: 'Cormorant Garamond', serif;
+    font-style: italic;
+  }
+
+  /* ── NOTES FEED ── */
+  .notes-section {
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--rule);
+  }
+
+  .notes-heading {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 24px;
+  }
+
+  .note-item {
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--warm);
+  }
+
+  .note-item:last-child { border-bottom: none; }
+
+  .note-date {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 6px;
+  }
+
+  .note-text {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 16px;
+    line-height: 1.65;
+    color: var(--ink);
+  }
+
+  .no-notes {
+    font-size: 12px;
+    color: var(--upcoming);
+    letter-spacing: 0.08em;
+  }
+
+  /* ── FOOTER ── */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-text {
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    text-transform: uppercase;
+  }
+
+  .logout-btn {
+    background: none;
+    border: none;
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 4px 0;
+    border-bottom: 1px solid transparent;
+    transition: color 0.2s, border-color 0.2s;
+    display: none;
+  }
+
+  .logout-btn:hover { color: var(--accent); border-bottom-color: var(--accent); }
+
+  /* ── LOADING ── */
+  .loading {
+    text-align: center;
+    padding: 60px 0;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  .loading::after {
+    content: '';
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid var(--rule);
+    border-top-color: var(--accent);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin-left: 12px;
+    vertical-align: middle;
+  }
+
+  /* ── ANIMATIONS ── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139,111,71,0.3); }
+    50%       { box-shadow: 0 0 0 6px rgba(139,111,71,0); }
+  }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  @media (max-width: 600px) {
+    header { padding: 18px 20px; }
+    main { padding: 40px 16px; }
+    footer { padding: 16px 20px; }
+    .login-heading { font-size: 28px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-word">O<span>A</span>D<span>A</span></div>
+  <div class="logo-sub">Mobility · Project Status</div>
+</header>
+
+<main>
+  <div class="container">
+
+    <!-- LOGIN -->
+    <div id="login-view">
+      <h1 class="login-heading">Project Access</h1>
+      <p class="login-sub">Enter your job code and PIN to view your project</p>
+
+      <div class="field-group">
+        <label for="job-code">Job Code</label>
+        <input type="text" id="job-code" placeholder="e.g. OADA-2026-001" autocomplete="off" autocapitalize="characters" spellcheck="false">
+      </div>
+
+      <div class="field-group">
+        <label for="pin">PIN</label>
+        <input type="password" id="pin" placeholder="••••" maxlength="8">
+      </div>
+
+      <button class="btn" id="login-btn" onclick="handleLogin()">View My Project</button>
+      <div class="error-msg" id="error-msg"></div>
+    </div>
+
+    <!-- PORTAL -->
+    <div id="portal-view">
+      <div id="loading-state" class="loading">Loading your project</div>
+      <div id="portal-content" style="display:none">
+
+        <div class="portal-meta">
+          <div class="client-name" id="display-name"></div>
+          <div class="project-detail" id="display-service"></div>
+          <div class="project-detail" id="display-movedate"></div>
+        </div>
+
+        <p class="timeline-heading">Project Phases</p>
+        <ul class="phase-list" id="phase-list"></ul>
+
+        <div class="notes-section">
+          <p class="notes-heading">Updates from OADA</p>
+          <div id="notes-list"></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<footer>
+  <span class="footer-text">OADA Mobility LLC · Northern NJ</span>
+  <button class="logout-btn" id="logout-btn" onclick="handleLogout()">Sign out</button>
+</footer>
+
+<script>
+  // ── CONFIG ── Replace with your deployed Apps Script URL
+  const SCRIPT_URL = 'YOUR_APPS_SCRIPT_URL_HERE';
+
+  const PHASES = [
+    { key: 'Intake',    label: 'Intake & Authorization' },
+    { key: 'Space Plan',label: 'Assessment & Space Plan' },
+    { key: 'Contract',  label: 'Contract & Scheduling'  },
+    { key: 'Active',    label: 'Active Move Management' },
+    { key: 'Closeout',  label: 'Closeout & Final Review' },
+    { key: 'Completed', label: 'Completed'              },
+  ];
+
+  let currentClient = null;
+
+  // ── LOGIN ──
+  document.getElementById('pin').addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+
+  async function handleLogin() {
+    const code = document.getElementById('job-code').value.trim().toUpperCase();
+    const pin  = document.getElementById('pin').value.trim();
+    const err  = document.getElementById('error-msg');
+    const btn  = document.getElementById('login-btn');
+
+    err.textContent = '';
+    if (!code || !pin) { err.textContent = 'Please enter both job code and PIN.'; return; }
+
+    btn.disabled = true;
+    btn.textContent = 'Verifying…';
+
+    try {
+      const url = `${SCRIPT_URL}?action=getClientPortal&jobCode=${encodeURIComponent(code)}&pin=${encodeURIComponent(pin)}`;
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (data.error) {
+        err.textContent = data.error;
+        btn.disabled = false;
+        btn.textContent = 'View My Project';
+        return;
+      }
+
+      currentClient = data;
+      showPortal(data);
+
+    } catch(e) {
+      err.textContent = 'Connection error. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'View My Project';
+    }
+  }
+
+  // ── PORTAL ──
+  function showPortal(data) {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('portal-view').style.display = 'block';
+    document.getElementById('logout-btn').style.display = 'block';
+
+    setTimeout(() => {
+      document.getElementById('loading-state').style.display = 'none';
+      document.getElementById('portal-content').style.display = 'block';
+      renderPortal(data);
+    }, 600);
+  }
+
+  function renderPortal(data) {
+    const client = data.client;
+    const notes  = data.notes || [];
+
+    // Meta
+    document.getElementById('display-name').textContent    = client.name || '';
+    document.getElementById('display-service').textContent = client.service || '';
+
+    const md = client.movedate;
+    if (md) {
+      const d = new Date(md + 'T12:00:00');
+      document.getElementById('display-movedate').textContent =
+        'Move date: ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+    }
+
+    // Phases
+    const currentStatus = client.status || 'Intake';
+    const currentIdx    = PHASES.findIndex(p => p.key === currentStatus);
+    const phaseList     = document.getElementById('phase-list');
+    phaseList.innerHTML = '';
+
+    PHASES.forEach((phase, i) => {
+      let state, statusLabel;
+      if (i < currentIdx)      { state = 'done';     statusLabel = 'Complete';    }
+      else if (i === currentIdx){ state = 'active';   statusLabel = 'In Progress'; }
+      else                      { state = 'upcoming'; statusLabel = 'Upcoming';    }
+
+      // Client-facing note for active phase
+      const noteText = (state === 'active' && client.clientNote) ? client.clientNote : '';
+
+      const li = document.createElement('li');
+      li.className = 'phase-item';
+      li.innerHTML = `
+        <div class="phase-dot ${state}"></div>
+        <div class="phase-body">
+          <div class="phase-name ${state}">${phase.label}</div>
+          <div class="phase-status-label ${state}">${statusLabel}</div>
+          ${noteText ? `<div class="phase-note">${noteText}</div>` : ''}
+        </div>
+      `;
+      phaseList.appendChild(li);
+    });
+
+    // Notes feed
+    const notesList = document.getElementById('notes-list');
+    notesList.innerHTML = '';
+
+    const publicNotes = notes.filter(n => n.public === 'true' || n.public === true);
+
+    if (publicNotes.length === 0) {
+      notesList.innerHTML = '<p class="no-notes">No updates posted yet.</p>';
+    } else {
+      publicNotes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      publicNotes.forEach(note => {
+        const d = new Date(note.timestamp);
+        const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        const div = document.createElement('div');
+        div.className = 'note-item';
+        div.innerHTML = `
+          <div class="note-date">${dateStr}</div>
+          <div class="note-text">${note.text}</div>
+        `;
+        notesList.appendChild(div);
+      });
+    }
+  }
+
+  function handleLogout() {
+    currentClient = null;
+    document.getElementById('portal-view').style.display  = 'none';
+    document.getElementById('login-view').style.display   = 'block';
+    document.getElementById('logout-btn').style.display   = 'none';
+    document.getElementById('portal-content').style.display = 'none';
+    document.getElementById('loading-state').style.display  = 'block';
+    document.getElementById('job-code').value = '';
+    document.getElementById('pin').value      = '';
+    document.getElementById('error-msg').textContent = '';
+    document.getElementById('login-btn').disabled = false;
+    document.getElementById('login-btn').textContent = 'View My Project';
+  }
+</script>
+
+</body>
+</html>
