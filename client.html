@@ -493,7 +493,7 @@
     if (e.key === 'Enter') handleLogin();
   });
 
-  async function handleLogin() {
+  function handleLogin() {
     const code = document.getElementById('job-code').value.trim().toUpperCase();
     const pin  = document.getElementById('pin').value.trim();
     const err  = document.getElementById('error-msg');
@@ -505,26 +505,32 @@
     btn.disabled = true;
     btn.textContent = 'Verifying…';
 
-    try {
-      const url = `${SCRIPT_URL}?action=getClientPortal&jobCode=${encodeURIComponent(code)}&pin=${encodeURIComponent(pin)}`;
-      const res = await fetch(url);
-      const data = await res.json();
+    const cbName = 'portalCb_' + Date.now();
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      err.textContent = 'Connection error. Please try again.';
+      btn.disabled = false;
+      btn.textContent = 'View My Project';
+      delete window[cbName];
+      script.remove();
+    }, 10000);
 
+    window[cbName] = function(data) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      script.remove();
       if (data.error) {
         err.textContent = data.error;
         btn.disabled = false;
         btn.textContent = 'View My Project';
         return;
       }
-
       currentClient = data;
       showPortal(data);
+    };
 
-    } catch(e) {
-      err.textContent = 'Connection error. Please try again.';
-      btn.disabled = false;
-      btn.textContent = 'View My Project';
-    }
+    script.src = `${SCRIPT_URL}?action=getClientPortal&jobCode=${encodeURIComponent(code)}&pin=${encodeURIComponent(pin)}&callback=${cbName}`;
+    document.head.appendChild(script);
   }
 
   // ── PORTAL ──
