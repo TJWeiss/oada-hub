@@ -76,14 +76,12 @@ tr:last-child td{border-bottom:none;}
 .phase-item.blocked{background:var(--danger-light);border-left:3px solid var(--danger);}
 .phase-dot{width:8px;height:8px;border-radius:50%;background:var(--muted);flex-shrink:0;margin-top:4px;}
 .phase-item.active .phase-dot{background:var(--accent);}.phase-item.blocked .phase-dot{background:var(--danger);}
-/* Pipeline stages */
 .pipeline-stages{display:flex;gap:0;margin-bottom:28px;}
 .pipeline-stage{flex:1;text-align:center;padding:12px 8px;background:#fff;border:1px solid var(--rule);border-right:none;font-size:11px;font-weight:600;color:var(--muted);position:relative;}
 .pipeline-stage:last-child{border-right:1px solid var(--rule);}
 .pipeline-stage.has-clients{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
 .pipeline-stage .stage-count{font-family:'DM Serif Display',serif;font-size:24px;display:block;color:var(--ink);}
 .pipeline-stage.has-clients .stage-count{color:var(--accent);}
-/* Job detail */
 .job-detail-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;padding-bottom:20px;border-bottom:1px solid var(--rule);}
 .job-detail-name{font-family:'DM Serif Display',serif;font-size:28px;}
 .job-detail-meta{font-size:13px;color:var(--muted);margin-top:4px;}
@@ -92,13 +90,11 @@ tr:last-child td{border-bottom:none;}
 .job-tab:hover{color:var(--ink);}
 .job-tab.active{color:var(--accent);border-bottom-color:var(--accent);}
 .job-tab-panel{display:none;}.job-tab-panel.active{display:block;}
-/* Phase tracker */
 .phase-tracker{display:flex;gap:0;margin-bottom:24px;}
 .phase-step{flex:1;text-align:center;padding:10px 4px;font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;background:var(--warm);border:1px solid var(--rule);border-right:none;color:var(--muted);cursor:pointer;transition:all .15s;}
 .phase-step:last-child{border-right:1px solid var(--rule);}
 .phase-step.done{background:var(--accent-light);color:var(--accent);border-color:var(--accent);}
 .phase-step.current{background:var(--accent);color:#fff;border-color:var(--accent);}
-/* Checklist inside job */
 .job-checklist{background:#fff;border:1px solid var(--rule);border-radius:6px;overflow:hidden;margin-bottom:16px;}
 .job-checklist-header{padding:10px 16px;background:var(--warm);border-bottom:1px solid var(--rule);font-family:'DM Mono',monospace;font-size:9px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
 .checklist-item{display:flex;align-items:center;gap:12px;padding:9px 16px;border-bottom:1px solid var(--warm);font-size:13px;}
@@ -106,43 +102,38 @@ tr:last-child td{border-bottom:none;}
 .checklist-item.done{opacity:.5;text-decoration:line-through;}
 .checklist-item input[type=checkbox]{width:15px;height:15px;cursor:pointer;accent-color:var(--accent);}
 .checklist-cat{font-family:'DM Mono',monospace;font-size:9px;padding:2px 6px;border-radius:2px;background:var(--warm);color:var(--muted);margin-left:auto;white-space:nowrap;}
-/* Notes log */
 .note-entry{padding:12px 16px;border-bottom:1px solid var(--warm);font-size:13px;}
 .note-entry:last-child{border-bottom:none;}
-.note-meta{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:4px;}
+.note-meta{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-bottom:4px;display:flex;align-items:center;gap:8px;}
 .note-text{line-height:1.5;}
-/* Vendor assignment */
+/* Note visibility badge */
+.note-public{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:var(--accent-light);color:var(--accent);letter-spacing:.08em;}
+.note-internal{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:var(--warm);color:var(--muted);letter-spacing:.08em;}
 .vendor-row-assigned td{background:var(--accent-light);}
-/* Billing summary */
 .billing-line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--warm);font-size:13px;}
 .billing-line:last-child{border-bottom:none;}
 .billing-line.total{font-weight:600;font-size:14px;padding-top:12px;}
-/* Tools grid */
 .tools-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;}
 .tool-card{background:#fff;border:1px solid var(--rule);border-radius:6px;padding:18px;transition:all .15s;display:flex;flex-direction:column;gap:8px;}
 .tool-card:hover{border-color:var(--accent);box-shadow:0 2px 12px rgba(45,90,61,.08);transform:translateY(-1px);}
 .tool-icon{font-size:22px;}.tool-name{font-weight:600;font-size:13px;}.tool-desc{font-size:11px;color:var(--muted);line-height:1.5;}
 .tool-status{font-family:'DM Mono',monospace;font-size:9px;}.tool-status.ok{color:var(--accent);}.tool-status.pending{color:var(--amber);}
-/* Billing calc */
 .billing-calc{background:var(--ink);color:#fff;border-radius:6px;padding:24px;font-family:'DM Mono',monospace;margin-bottom:20px;}
 .calc-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #333;font-size:12px;}
 .calc-row:last-child{border-bottom:none;}.calc-row.total{font-size:14px;color:#9fc;padding-top:12px;}
 .calc-input{background:#333;border:none;color:#fff;font-family:'DM Mono',monospace;font-size:12px;padding:4px 8px;border-radius:3px;width:130px;text-align:right;}
 .calc-input:focus{outline:1px solid #9fc;}
-/* Upload */
 .upload-zone{border:2px dashed var(--rule);border-radius:6px;padding:32px;text-align:center;background:var(--warm);cursor:pointer;transition:all .2s;margin-bottom:20px;}
 .upload-zone:hover,.upload-zone.drag-over{border-color:var(--accent);background:var(--accent-light);}
 .upload-icon{font-size:32px;margin-bottom:10px;}.upload-label{font-size:14px;font-weight:600;margin-bottom:4px;}.upload-sub{font-size:12px;color:var(--muted);}
 .file-list{display:flex;flex-direction:column;gap:8px;}
 .file-item{display:flex;align-items:center;gap:12px;padding:10px 14px;background:#fff;border:1px solid var(--rule);border-radius:4px;font-size:13px;}
 .file-name{flex:1;font-weight:500;}.file-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;}
-/* BP */
 .bp-section{margin-bottom:24px;}
 .bp-section-title{font-family:'DM Serif Display',serif;font-size:16px;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--rule);}
 .bp-item{display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--warm);font-size:13px;line-height:1.5;}
 .bp-item:last-child{border-bottom:none;}
 .bp-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);min-width:20px;padding-top:1px;}
-/* Modal */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(26,26,24,.6);z-index:200;align-items:center;justify-content:center;}
 .modal-overlay.open{display:flex;}
 .modal{background:var(--paper);border-radius:8px;padding:28px;width:760px;max-width:95vw;max-height:85vh;overflow-y:auto;border:1px solid var(--rule);}
@@ -156,6 +147,15 @@ tr:last-child td{border-bottom:none;}
 .form-input,.form-select,.form-textarea{padding:8px 12px;border:1px solid var(--rule);border-radius:4px;font-family:'Instrument Sans',sans-serif;font-size:13px;background:#fff;color:var(--ink);}
 .form-input:focus,.form-select:focus,.form-textarea:focus{outline:none;border-color:var(--accent);}
 .form-textarea{resize:vertical;min-height:72px;}
+/* Toggle switch */
+.toggle-row{display:flex;align-items:center;gap:10px;padding:4px 0;}
+.toggle-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);}
+.toggle{position:relative;display:inline-block;width:36px;height:20px;}
+.toggle input{opacity:0;width:0;height:0;}
+.toggle-slider{position:absolute;cursor:pointer;inset:0;background:var(--rule);border-radius:20px;transition:.2s;}
+.toggle-slider:before{position:absolute;content:"";height:14px;width:14px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;}
+.toggle input:checked + .toggle-slider{background:var(--accent);}
+.toggle input:checked + .toggle-slider:before{transform:translateX(16px);}
 code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);padding:1px 5px;border-radius:2px;}
 ::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--rule);border-radius:3px;}
 </style>
@@ -181,7 +181,7 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
     <div class="nav-item" onclick="nav('practices',this)"><span class="nav-icon">≡</span> Operating Standards</div>
     <div class="nav-item" onclick="nav('vendors',this)"><span class="nav-icon">◉</span> Vendor Registry</div>
   </nav>
-  <div class="sidebar-footer">OADA Mobility LLC · v5.0</div>
+  <div class="sidebar-footer">OADA Mobility LLC · v6.0</div>
 </aside>
 
 <main class="main">
@@ -246,7 +246,6 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
         <div class="section-title">CRM / Pipeline</div>
         <button class="btn btn-primary" onclick="openModal('add-client')">+ Add Client</button>
       </div>
-      <!-- Pipeline stage summary -->
       <div class="pipeline-stages" id="pipeline-stages"></div>
       <div class="table-wrap">
         <table>
@@ -277,7 +276,6 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
         </div>
       </div>
 
-      <!-- Phase tracker bar -->
       <div class="phase-tracker" id="jd-phase-tracker">
         <div class="phase-step" onclick="setPhase(0)">Pre-Start</div>
         <div class="phase-step" onclick="setPhase(1)">Execution</div>
@@ -286,34 +284,22 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
         <div class="phase-step" onclick="setPhase(4)">Closeout</div>
       </div>
 
-      <!-- Job tabs -->
       <div class="job-tabs">
         <div class="job-tab active" onclick="jobTab('overview',this)">Overview</div>
         <div class="job-tab" onclick="jobTab('checklist',this)">Checklist</div>
         <div class="job-tab" onclick="jobTab('vendors',this)">Vendors</div>
         <div class="job-tab" onclick="jobTab('billing',this)">Billing</div>
         <div class="job-tab" onclick="jobTab('notes',this)">Notes</div>
+        <div class="job-tab" onclick="jobTab('portal',this)">Portal Access</div>
       </div>
 
       <!-- Overview -->
       <div class="job-tab-panel active" id="jt-overview">
         <div class="two-col">
-          <div class="card">
-            <div class="card-title">Current Address</div>
-            <div id="jd-current-addr" style="font-size:13px;line-height:1.8"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Destination</div>
-            <div id="jd-dest-addr" style="font-size:13px;line-height:1.8"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Contact Info</div>
-            <div id="jd-contact-info" style="font-size:13px;line-height:1.8"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Job Summary</div>
-            <div id="jd-job-summary" style="font-size:13px;line-height:1.8"></div>
-          </div>
+          <div class="card"><div class="card-title">Current Address</div><div id="jd-current-addr" style="font-size:13px;line-height:1.8"></div></div>
+          <div class="card"><div class="card-title">Destination</div><div id="jd-dest-addr" style="font-size:13px;line-height:1.8"></div></div>
+          <div class="card"><div class="card-title">Contact Info</div><div id="jd-contact-info" style="font-size:13px;line-height:1.8"></div></div>
+          <div class="card"><div class="card-title">Job Summary</div><div id="jd-job-summary" style="font-size:13px;line-height:1.8"></div></div>
         </div>
       </div>
 
@@ -351,7 +337,6 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
           <div>
             <div class="card">
               <div class="card-title">Fee Summary</div>
-
               <div class="billing-line">
                 <span>Space Plan</span>
                 <span style="display:flex;align-items:center;gap:8px">
@@ -362,7 +347,6 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
                   <span id="jb-space-plan-display" style="font-family:'DM Mono',monospace;font-size:12px;min-width:60px;text-align:right">$500.00</span>
                 </span>
               </div>
-
               <div class="billing-line">
                 <span>Initiation Fee</span>
                 <span style="display:flex;align-items:center;gap:8px">
@@ -373,7 +357,6 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
                   <input type="number" id="jb-init-fee" style="width:80px;border:1px solid var(--rule);border-radius:4px;padding:3px 8px;font-size:12px;text-align:right" value="0" oninput="updateJobBilling()" placeholder="$0">
                 </span>
               </div>
-
               <div class="billing-line">
                 <span>Space Plan credited toward initiation?</span>
                 <select id="jb-credit" style="font-size:12px;padding:3px 8px;border:1px solid var(--rule);border-radius:4px" onchange="updateJobBilling()">
@@ -381,17 +364,14 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
                   <option value="0">No</option>
                 </select>
               </div>
-
               <div class="billing-line" style="background:var(--warm);padding:8px 12px;border-radius:4px;margin-top:4px">
                 <span style="font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)">PM Fee Rate</span>
                 <span style="font-weight:600">8.5% (fixed)</span>
               </div>
-
               <div class="billing-line">
                 <span>Total PM Fees (all vendor phases)</span>
                 <span id="jb-pm-total" style="font-family:'DM Mono',monospace">$0.00</span>
               </div>
-
               <div class="billing-line total" style="margin-top:8px;padding-top:12px;border-top:2px solid var(--rule)">
                 <span>OADA Total</span>
                 <span id="jb-oada-total" style="font-family:'DM Serif Display',serif;font-size:20px">$0.00</span>
@@ -417,14 +397,54 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
 
       <!-- Notes -->
       <div class="job-tab-panel" id="jt-notes">
-        <div style="display:flex;gap:10px;margin-bottom:16px">
-          <textarea id="new-note-text" class="form-textarea" style="flex:1;min-height:60px" placeholder="Add a note, communication record, or update..."></textarea>
-          <button class="btn btn-primary" onclick="addNote()" style="align-self:flex-end">Add Note</button>
+        <div style="margin-bottom:16px">
+          <textarea id="new-note-text" class="form-textarea" style="width:100%;min-height:72px;margin-bottom:10px" placeholder="Add a note, communication record, or update..."></textarea>
+          <div style="display:flex;align-items:center;justify-content:space-between">
+            <div class="toggle-row">
+              <label class="toggle">
+                <input type="checkbox" id="note-public-toggle">
+                <span class="toggle-slider"></span>
+              </label>
+              <span class="toggle-label" id="note-toggle-label">Internal only</span>
+            </div>
+            <button class="btn btn-primary" onclick="addNote()">Add Note</button>
+          </div>
         </div>
         <div class="table-wrap">
           <div id="jd-notes-list" style="padding:4px 0"></div>
         </div>
       </div>
+
+      <!-- Portal Access -->
+      <div class="job-tab-panel" id="jt-portal">
+        <div class="two-col">
+          <div class="card">
+            <div class="card-title">Client Portal Access</div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label">Job Code</label>
+              <input class="form-input" id="jd-job-code" placeholder="e.g. OADA-2026-001">
+            </div>
+            <div class="form-group" style="margin-bottom:14px">
+              <label class="form-label">Client PIN</label>
+              <input class="form-input" id="jd-client-pin" placeholder="4–8 digits" maxlength="8">
+            </div>
+            <div class="form-group" style="margin-bottom:20px">
+              <label class="form-label">Active Phase Note <span style="font-weight:400;text-transform:none;letter-spacing:0">(shown on portal next to current phase)</span></label>
+              <textarea class="form-textarea" id="jd-client-note" placeholder="e.g. Movers confirmed for April 18th. Haul-away scheduled for April 12th." style="min-height:80px"></textarea>
+            </div>
+            <button class="btn btn-primary btn-sm" onclick="savePortalAccess()">Save Portal Settings</button>
+          </div>
+          <div class="card">
+            <div class="card-title">Portal Link</div>
+            <div style="font-size:13px;line-height:1.8;color:var(--muted)">
+              Share this URL with the client or family contact:<br><br>
+              <code style="font-size:12px;word-break:break-all">https://tjweiss.github.io/oada-hub/client.html</code><br><br>
+              They log in with the Job Code and PIN you assign above.
+            </div>
+          </div>
+        </div>
+      </div>
+
     </div>
 
     <!-- ACTIVE JOBS -->
@@ -576,35 +596,18 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
           <button class="btn btn-outline btn-sm" id="vd-email-btn" onclick="">Email</button>
         </div>
       </div>
-
       <div class="job-tabs">
         <div class="job-tab active" onclick="vendorTab('info',this)">Info</div>
         <div class="job-tab" onclick="vendorTab('jobs',this)">Job History</div>
       </div>
-
-      <!-- Info tab -->
       <div class="job-tab-panel active" id="vt-info">
         <div class="two-col">
-          <div class="card">
-            <div class="card-title">Contact</div>
-            <div id="vd-contact-info" style="font-size:13px;line-height:2"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Address</div>
-            <div id="vd-address" style="font-size:13px;line-height:2"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Compliance</div>
-            <div id="vd-compliance" style="font-size:13px;line-height:2"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Notes</div>
-            <div id="vd-notes" style="font-size:13px;line-height:1.6"></div>
-          </div>
+          <div class="card"><div class="card-title">Contact</div><div id="vd-contact-info" style="font-size:13px;line-height:2"></div></div>
+          <div class="card"><div class="card-title">Address</div><div id="vd-address" style="font-size:13px;line-height:2"></div></div>
+          <div class="card"><div class="card-title">Compliance</div><div id="vd-compliance" style="font-size:13px;line-height:2"></div></div>
+          <div class="card"><div class="card-title">Notes</div><div id="vd-notes" style="font-size:13px;line-height:1.6"></div></div>
         </div>
       </div>
-
-      <!-- Jobs tab -->
       <div class="job-tab-panel" id="vt-jobs">
         <div class="table-wrap">
           <table>
@@ -662,41 +665,21 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
       <div class="form-group"><label class="form-label">Company Name</label><input class="form-input" id="v-name"></div>
       <div class="form-group"><label class="form-label">Category</label>
         <select class="form-select" id="v-cat">
-          <option>Movers</option>
-          <option>Organizers / Sorters</option>
-          <option>Junk Haulers</option>
-          <option>Estate Sale</option>
-          <option>Biohazard / Hoarding</option>
+          <option>Movers</option><option>Organizers / Sorters</option><option>Junk Haulers</option><option>Estate Sale</option><option>Biohazard / Hoarding</option>
         </select>
       </div>
       <div class="form-group"><label class="form-label">Service Area</label><input class="form-input" id="v-area" placeholder="Counties / towns"></div>
-
       <div class="form-group"><label class="form-label">Primary Contact Name</label><input class="form-input" id="v-contact" placeholder="Full name"></div>
-      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="v-phone" placeholder=""></div>
-      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="v-email" placeholder=""></div>
-
-      <div class="form-group full"><label class="form-label">Street Address</label><input class="form-input" id="v-addr-street" placeholder=""></div>
+      <div class="form-group"><label class="form-label">Phone</label><input class="form-input" id="v-phone"></div>
+      <div class="form-group"><label class="form-label">Email</label><input class="form-input" id="v-email"></div>
+      <div class="form-group full"><label class="form-label">Street Address</label><input class="form-input" id="v-addr-street"></div>
       <div class="form-group"><label class="form-label">City</label><input class="form-input" id="v-addr-city"></div>
       <div class="form-group"><label class="form-label">State</label><input class="form-input" id="v-addr-state" placeholder="e.g. NJ"></div>
       <div class="form-group"><label class="form-label">Zip</label><input class="form-input" id="v-addr-zip"></div>
-
-      <div class="form-group"><label class="form-label">Insurance on File</label>
-        <select class="form-select" id="v-ins"><option value="no">No</option><option value="yes">Yes</option></select>
-      </div>
-      <div class="form-group"><label class="form-label">W9 on File</label>
-        <select class="form-select" id="v-w9"><option value="no">No</option><option value="yes">Yes</option></select>
-      </div>
-      <div class="form-group"><label class="form-label">Agreement Status</label>
-        <select class="form-select" id="v-agreement">
-          <option value="pending">Pending</option>
-          <option value="signed">Signed</option>
-          <option value="na">N/A</option>
-        </select>
-      </div>
-
-      <div class="form-group full"><label class="form-label">Notes</label>
-        <textarea class="form-textarea" id="v-notes" placeholder="Performance notes, preferred status, specialties..."></textarea>
-      </div>
+      <div class="form-group"><label class="form-label">Insurance on File</label><select class="form-select" id="v-ins"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      <div class="form-group"><label class="form-label">W9 on File</label><select class="form-select" id="v-w9"><option value="no">No</option><option value="yes">Yes</option></select></div>
+      <div class="form-group"><label class="form-label">Agreement Status</label><select class="form-select" id="v-agreement"><option value="pending">Pending</option><option value="signed">Signed</option><option value="na">N/A</option></select></div>
+      <div class="form-group full"><label class="form-label">Notes</label><textarea class="form-textarea" id="v-notes" placeholder="Performance notes, preferred status, specialties..."></textarea></div>
     </div>
     <div class="modal-actions">
       <button class="btn btn-outline" onclick="closeModal('add-vendor')">Cancel</button>
@@ -723,7 +706,7 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
 </div>
 
 <script>
-// ── State ────────────────────────────────────────────────────────────────────
+// ── State ─────────────────────────────────────────────────────────────────────
 const STORAGE_KEY = 'oada_script_url';
 let SCRIPT_URL = localStorage.getItem(STORAGE_KEY) || '';
 let clients = [], vendors = [], jobVendors = [], jobNotes = [];
@@ -877,8 +860,6 @@ async function removeClient(id, e) {
 function renderCRM() {
   const tbody = document.getElementById('crm-rows');
   const dash = document.getElementById('dashboard-crm');
-
-  // Pipeline stage bar
   const stageBar = document.getElementById('pipeline-stages');
   stageBar.innerHTML = STAGES.map(s => {
     const count = clients.filter(c => c.status === s).length;
@@ -886,7 +867,6 @@ function renderCRM() {
       <span class="stage-count">${count}</span>${s}
     </div>`;
   }).join('');
-
   if (!clients.length) {
     tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:32px;font-size:13px">No clients yet.</td></tr>';
     dash.innerHTML = '<tr><td colspan="3" style="text-align:center;color:var(--muted);padding:20px;font-size:12px">—</td></tr>';
@@ -894,8 +874,7 @@ function renderCRM() {
   }
   tbody.innerHTML = clients.map(c => `
     <tr class="tr-clickable" onclick="openJobDetail('${c.id}')">
-      <td><strong>${c.name}</strong>${c.notes?`<br><span style="font-size:11px;color:var(--muted)">${c.notes.substring(0,40)}</span>`:''}
-      </td>
+      <td><strong>${c.name}</strong>${c.notes?`<br><span style="font-size:11px;color:var(--muted)">${c.notes.substring(0,40)}</span>`:''}</td>
       <td>${c.contact||'—'}<br><span style="font-size:11px;color:var(--muted)">${c.phone||''}</span></td>
       <td>${c.service||'—'}</td>
       <td><span class="badge ${statusBadge[c.status]||'badge-muted'}">${c.status||'—'}</span></td>
@@ -904,15 +883,12 @@ function renderCRM() {
       <td style="font-size:11px;color:var(--muted)">${c.assignedPM||'—'}</td>
       <td><button class="btn btn-outline btn-sm" onclick="removeClient('${c.id}',event)">✕</button></td>
     </tr>`).join('');
-
   dash.innerHTML = clients.filter(c=>c.status!=='Completed').slice(0,5).map(c => `
     <tr class="tr-clickable" onclick="openJobDetail('${c.id}')">
       <td><strong>${c.name}</strong></td>
       <td><span class="badge ${statusBadge[c.status]||'badge-muted'}">${c.status||'—'}</span></td>
       <td>${c.next||'—'}</td>
     </tr>`).join('');
-
-  // Active jobs panel
   const active = clients.filter(c => c.status === 'Active');
   const aEl = document.getElementById('active-jobs-content');
   if (!active.length) {
@@ -946,19 +922,20 @@ function renderJobDetail(id) {
     [c.contact, c.phone, c.email].filter(Boolean).join('<br>') || '—';
   document.getElementById('jd-job-summary').innerHTML =
     `<strong>Stage:</strong> ${c.status||'—'}<br><strong>Revenue Est.:</strong> ${c.revenue||'—'}<br><strong>Next Action:</strong> ${c.next||'—'}${c.notes?'<br><strong>Notes:</strong> '+c.notes:''}`;
-
-  // Phase tracker
-  const phases = ['Pre-Start','Execution','Preparation','Delivery','Closeout'];
   const currentPhase = parseInt(c.currentPhase||0);
   document.querySelectorAll('.phase-step').forEach((el,i) => {
     el.className = 'phase-step' + (i < currentPhase ? ' done' : i === currentPhase ? ' current' : '');
   });
-
-  // Billing
   document.getElementById('jb-init-fee').value = c.initiationFee || 0;
   document.getElementById('jb-credit').value = c.spaceplanCredit !== undefined ? c.spaceplanCredit : 1;
   if (c.spaceplanStatus) document.getElementById('jb-space-plan-status').value = c.spaceplanStatus;
   if (c.initiationStatus) document.getElementById('jb-init-status').value = c.initiationStatus;
+
+  // Portal access fields
+  document.getElementById('jd-job-code').value = c.jobCode || '';
+  document.getElementById('jd-client-pin').value = c.clientPin || '';
+  document.getElementById('jd-client-note').value = c.clientNote || '';
+
   renderJobVendors(id);
   renderJobNotes(id);
 }
@@ -972,7 +949,6 @@ async function updateJobStatus() {
     await apiCall({ action: 'saveClient', record: c });
     setSyncStatus('ok', 'Saved');
     renderCRM(); updateDashboard();
-    document.getElementById('jd-meta').textContent = `${c.service||''} · ${c.assignedPM||''}${c.movedate?' · Move: '+c.movedate:''}`;
   } catch(e) { setSyncStatus('error', 'Save failed'); }
 }
 
@@ -980,10 +956,21 @@ async function setPhase(idx) {
   const c = clients.find(x => x.id === currentClientId);
   if (!c) return;
   c.currentPhase = idx;
-  const phases = ['Pre-Start','Execution','Preparation','Delivery','Closeout'];
   document.querySelectorAll('.phase-step').forEach((el,i) => {
     el.className = 'phase-step' + (i < idx ? ' done' : i === idx ? ' current' : '');
   });
+  setSyncStatus('syncing', 'Saving...');
+  try { await apiCall({ action: 'saveClient', record: c }); setSyncStatus('ok', 'Saved'); }
+  catch(e) { setSyncStatus('error', 'Save failed'); }
+}
+
+// ── Portal access save ────────────────────────────────────────────────────────
+async function savePortalAccess() {
+  const c = clients.find(x => x.id === currentClientId);
+  if (!c) return;
+  c.jobCode     = document.getElementById('jd-job-code').value.trim();
+  c.clientPin   = document.getElementById('jd-client-pin').value.trim();
+  c.clientNote  = document.getElementById('jd-client-note').value.trim();
   setSyncStatus('syncing', 'Saving...');
   try { await apiCall({ action: 'saveClient', record: c }); setSyncStatus('ok', 'Saved'); }
   catch(e) { setSyncStatus('error', 'Save failed'); }
@@ -1057,12 +1044,6 @@ function renderChecklists(filter) {
 }
 
 // ── Job Vendors ───────────────────────────────────────────────────────────────
-function openModal_assignVendor() {
-  const sel = document.getElementById('av-vendor-id');
-  sel.innerHTML = vendors.map(v=>`<option value="${v.id}">${v.name} (${v.cat})</option>`).join('');
-  openModal('assign-vendor');
-}
-
 async function assignVendor() {
   const vendorId = document.getElementById('av-vendor-id').value;
   const v = vendors.find(x=>x.id===vendorId);
@@ -1071,10 +1052,8 @@ async function assignVendor() {
   const lower = bid&&actual?Math.min(bid,actual):(bid||actual);
   const pmFee = lower*0.085;
   const r = {
-    clientId: currentClientId,
-    vendorId,
-    vendorName: v?v.name:'',
-    vendorCat: v?v.cat:'',
+    clientId: currentClientId, vendorId,
+    vendorName: v?v.name:'', vendorCat: v?v.cat:'',
     phase: document.getElementById('av-phase').value,
     bid, actual, lower, pmFee,
     status: document.getElementById('av-status').value
@@ -1094,12 +1073,9 @@ function renderJobVendors(clientId) {
   const tbody = document.getElementById('jd-vendor-rows');
   if(!jv.length){ tbody.innerHTML='<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px;font-size:13px">No vendors assigned yet.</td></tr>'; return; }
   tbody.innerHTML = jv.map(v=>`<tr>
-    <td><strong>${v.vendorName}</strong></td>
-    <td>${v.vendorCat}</td>
-    <td>$${parseFloat(v.bid||0).toFixed(2)}</td>
-    <td>$${parseFloat(v.actual||0).toFixed(2)}</td>
-    <td>$${parseFloat(v.lower||0).toFixed(2)}</td>
-    <td><strong>$${parseFloat(v.pmFee||0).toFixed(2)}</strong></td>
+    <td><strong>${v.vendorName}</strong></td><td>${v.vendorCat}</td>
+    <td>$${parseFloat(v.bid||0).toFixed(2)}</td><td>$${parseFloat(v.actual||0).toFixed(2)}</td>
+    <td>$${parseFloat(v.lower||0).toFixed(2)}</td><td><strong>$${parseFloat(v.pmFee||0).toFixed(2)}</strong></td>
     <td><span class="badge ${v.status==='Complete'?'badge-green':v.status==='In Progress'?'badge-amber':'badge-muted'}">${v.status}</span></td>
     <td><button class="btn btn-outline btn-sm" onclick="removeJobVendor('${v.id}')">✕</button></td>
   </tr>`).join('');
@@ -1118,77 +1094,72 @@ async function removeJobVendor(id) {
 function updateJobBilling() {
   const jv = jobVendors.filter(x => x.clientId === currentClientId);
   const totalPM = jv.reduce((s,v) => s + parseFloat(v.pmFee||0), 0);
-
   const spaceplanStatus = document.getElementById('jb-space-plan-status').value;
   const initStatus      = document.getElementById('jb-init-status').value;
   const initAmt         = parseFloat(document.getElementById('jb-init-fee').value) || 0;
   const credit          = parseInt(document.getElementById('jb-credit').value);
-
   const spaceplanAmt = spaceplanStatus === 'waived' ? 0 : 500;
   const initNet      = initStatus === 'waived' ? 0 : (credit ? Math.max(0, initAmt - spaceplanAmt) : initAmt);
   const oadaTotal    = spaceplanAmt + initNet + totalPM;
-
-  // Update display
   const spDisp = document.getElementById('jb-space-plan-display');
   if (spDisp) spDisp.textContent = spaceplanStatus === 'waived' ? 'Waived' : '$500.00';
-
   const initInput = document.getElementById('jb-init-fee');
-  if (initStatus === 'waived') {
-    initInput.disabled = true;
-    initInput.style.opacity = '0.4';
-  } else {
-    initInput.disabled = false;
-    initInput.style.opacity = '1';
-  }
-
+  if (initStatus === 'waived') { initInput.disabled = true; initInput.style.opacity = '0.4'; }
+  else { initInput.disabled = false; initInput.style.opacity = '1'; }
   document.getElementById('jb-pm-total').textContent = '$' + totalPM.toFixed(2);
   document.getElementById('jb-oada-total').textContent = '$' + oadaTotal.toFixed(2);
-
-  // Phase breakdown
   const phases = ['Pre-Start','Execution','Preparation','Delivery','Closeout'];
   const breakdown = document.getElementById('jb-phase-breakdown');
-  if (!jv.length) {
-    breakdown.innerHTML = 'Assign vendors to see phase breakdown.';
-    breakdown.style.color = 'var(--muted)';
-  } else {
+  if (!jv.length) { breakdown.innerHTML = 'Assign vendors to see phase breakdown.'; breakdown.style.color = 'var(--muted)'; }
+  else {
     breakdown.style.color = 'var(--ink)';
     breakdown.innerHTML = phases.map(phase => {
       const phaseVendors = jv.filter(v => v.phase === phase);
       if (!phaseVendors.length) return '';
       const phasePM = phaseVendors.reduce((s,v) => s + parseFloat(v.pmFee||0), 0);
-      return `<div class="billing-line" style="font-size:12px">
-        <span>${phase} (${phaseVendors.length} vendor${phaseVendors.length>1?'s':''})</span>
-        <span style="font-family:'DM Mono',monospace">$${phasePM.toFixed(2)}</span>
-      </div>`;
-    }).filter(Boolean).join('') ||
-    '<div style="color:var(--muted);font-size:12px">No phase data yet.</div>';
+      return `<div class="billing-line" style="font-size:12px"><span>${phase} (${phaseVendors.length} vendor${phaseVendors.length>1?'s':''})</span><span style="font-family:'DM Mono',monospace">$${phasePM.toFixed(2)}</span></div>`;
+    }).filter(Boolean).join('') || '<div style="color:var(--muted);font-size:12px">No phase data yet.</div>';
   }
 }
 
 async function saveJobBilling() {
   const c = clients.find(x => x.id === currentClientId);
   if (!c) return;
-  c.initiationFee     = document.getElementById('jb-init-fee').value;
-  c.spaceplanCredit   = document.getElementById('jb-credit').value;
-  c.spaceplanStatus   = document.getElementById('jb-space-plan-status').value;
-  c.initiationStatus  = document.getElementById('jb-init-status').value;
+  c.initiationFee    = document.getElementById('jb-init-fee').value;
+  c.spaceplanCredit  = document.getElementById('jb-credit').value;
+  c.spaceplanStatus  = document.getElementById('jb-space-plan-status').value;
+  c.initiationStatus = document.getElementById('jb-init-status').value;
   setSyncStatus('syncing', 'Saving...');
   try { await apiCall({ action: 'saveClient', record: c }); setSyncStatus('ok', 'Saved'); }
   catch(e) { setSyncStatus('error', 'Save failed'); }
 }
 
 // ── Job Notes ─────────────────────────────────────────────────────────────────
+// Toggle label update
+document.getElementById('note-public-toggle').addEventListener('change', function() {
+  document.getElementById('note-toggle-label').textContent = this.checked ? 'Visible on client portal' : 'Internal only';
+});
+
 async function addNote() {
   const text = document.getElementById('new-note-text').value.trim();
-  if(!text) return;
-  const r = { clientId:currentClientId, text, timestamp:new Date().toLocaleString(), author:'Jim Weiss' };
+  if (!text) return;
+  const isPublic = document.getElementById('note-public-toggle').checked;
+  const r = {
+    clientId: currentClientId,
+    text,
+    timestamp: new Date().toLocaleString(),
+    author: 'Jim Weiss',
+    public: isPublic ? 'true' : 'false'
+  };
   setSyncStatus('syncing','Saving...');
-  try{
+  try {
     const res = await apiCall({action:'saveJobNote',record:r});
     if(res&&res.id){ r.id=res.id; jobNotes.push(r); setSyncStatus('ok','Saved'); }
     else setSyncStatus('error','Save failed');
   } catch(e){ setSyncStatus('error','Save failed'); }
-  document.getElementById('new-note-text').value='';
+  document.getElementById('new-note-text').value = '';
+  document.getElementById('note-public-toggle').checked = false;
+  document.getElementById('note-toggle-label').textContent = 'Internal only';
   renderJobNotes(currentClientId);
 }
 
@@ -1196,11 +1167,16 @@ function renderJobNotes(clientId) {
   const notes = jobNotes.filter(n=>n.clientId===clientId).slice().reverse();
   const el = document.getElementById('jd-notes-list');
   if(!notes.length){ el.innerHTML='<div style="text-align:center;padding:24px;font-size:13px;color:var(--muted)">No notes yet.</div>'; return; }
-  el.innerHTML = notes.map(n=>`
-    <div class="note-entry">
-      <div class="note-meta">${n.timestamp} · ${n.author}</div>
+  el.innerHTML = notes.map(n => {
+    const isPublic = n.public === 'true' || n.public === true;
+    return `<div class="note-entry">
+      <div class="note-meta">
+        <span>${n.timestamp} · ${n.author}</span>
+        <span class="${isPublic ? 'note-public' : 'note-internal'}">${isPublic ? 'Client visible' : 'Internal'}</span>
+      </div>
       <div class="note-text">${n.text}</div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
 
 // ── Vendors ───────────────────────────────────────────────────────────────────
@@ -1255,20 +1231,13 @@ async function removeVendor(id, e) {
 
 function renderVendors() {
   const tbody = document.getElementById('vendor-rows');
-  if (!vendors.length) {
-    tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px;font-size:13px">No vendors yet.</td></tr>';
-    return;
-  }
+  if (!vendors.length) { tbody.innerHTML = '<tr><td colspan="9" style="text-align:center;color:var(--muted);padding:32px;font-size:13px">No vendors yet.</td></tr>'; return; }
   const agBadge = { signed:'badge-green', pending:'badge-amber', na:'badge-muted' };
   tbody.innerHTML = vendors.map(v => `
     <tr class="tr-clickable" onclick="openVendorDetail('${v.id}')">
       <td><strong>${v.name}</strong>${v.addrCity?`<br><span style="font-size:11px;color:var(--muted)">${[v.addrCity,v.addrState].filter(Boolean).join(', ')}</span>`:''}</td>
-      <td>${v.cat||'—'}</td>
-      <td>${v.area||'—'}</td>
-      <td>${v.contact||'—'}<br>
-        ${v.phone?`<span style="font-size:11px;color:var(--muted)">${v.phone}</span><br>`:''}
-        ${v.email?`<a href="mailto:${v.email}" style="font-size:11px;color:var(--accent)" onclick="event.stopPropagation()">${v.email}</a>`:''}
-      </td>
+      <td>${v.cat||'—'}</td><td>${v.area||'—'}</td>
+      <td>${v.contact||'—'}<br>${v.phone?`<span style="font-size:11px;color:var(--muted)">${v.phone}</span><br>`:''} ${v.email?`<a href="mailto:${v.email}" style="font-size:11px;color:var(--accent)" onclick="event.stopPropagation()">${v.email}</a>`:''}</td>
       <td><span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span></td>
       <td><span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span></td>
       <td><span class="badge ${agBadge[v.agreement]||'badge-muted'}">${v.agreement==='signed'?'Signed':v.agreement==='na'?'N/A':'Pending'}</span></td>
@@ -1293,76 +1262,28 @@ function renderVendorDetail(id) {
   if (!v) return;
   document.getElementById('vd-name').textContent = v.name;
   document.getElementById('vd-meta').textContent = [v.cat, v.area].filter(Boolean).join(' · ');
-
-  // Email button
   const emailBtn = document.getElementById('vd-email-btn');
-  if (v.email) {
-    emailBtn.onclick = () => window.location.href = 'mailto:' + v.email;
-    emailBtn.textContent = 'Email ' + v.contact;
-    emailBtn.style.opacity = '1';
-  } else {
-    emailBtn.onclick = null;
-    emailBtn.textContent = 'No Email on File';
-    emailBtn.style.opacity = '0.4';
-  }
-
-  // Contact info
-  document.getElementById('vd-contact-info').innerHTML = [
-    v.contact ? `<strong>${v.contact}</strong>` : '',
-    v.phone   ? `📞 <a href="tel:${v.phone}" style="color:var(--accent)">${v.phone}</a>` : '',
-    v.email   ? `✉ <a href="mailto:${v.email}" style="color:var(--accent)">${v.email}</a>` : ''
-  ].filter(Boolean).join('<br>') || '—';
-
-  // Address
-  document.getElementById('vd-address').innerHTML = [
-    v.addrStreet,
-    [v.addrCity, v.addrState, v.addrZip].filter(Boolean).join(', ')
-  ].filter(Boolean).join('<br>') || '—';
-
-  // Compliance
+  if (v.email) { emailBtn.onclick = () => window.location.href = 'mailto:' + v.email; emailBtn.textContent = 'Email ' + v.contact; emailBtn.style.opacity = '1'; }
+  else { emailBtn.onclick = null; emailBtn.textContent = 'No Email on File'; emailBtn.style.opacity = '0.4'; }
+  document.getElementById('vd-contact-info').innerHTML = [v.contact?`<strong>${v.contact}</strong>`:'',v.phone?`📞 <a href="tel:${v.phone}" style="color:var(--accent)">${v.phone}</a>`:'',v.email?`✉ <a href="mailto:${v.email}" style="color:var(--accent)">${v.email}</a>`:''].filter(Boolean).join('<br>') || '—';
+  document.getElementById('vd-address').innerHTML = [v.addrStreet,[v.addrCity,v.addrState,v.addrZip].filter(Boolean).join(', ')].filter(Boolean).join('<br>') || '—';
   const agBadge = { signed:'badge-green', pending:'badge-amber', na:'badge-muted' };
-  const agLabel = v.agreement==='signed'?'Signed':v.agreement==='na'?'N/A':'Pending';
-  document.getElementById('vd-compliance').innerHTML = `
-    Insurance: <span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span><br>
-    W9: <span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span><br>
-    Agreement: <span class="badge ${agBadge[v.agreement]||'badge-muted'}">${agLabel}</span>
-  `;
-
-  // Notes
+  document.getElementById('vd-compliance').innerHTML = `Insurance: <span class="badge ${v.ins==='yes'?'badge-green':'badge-red'}">${v.ins==='yes'?'On file':'Missing'}</span><br>W9: <span class="badge ${v.w9==='yes'?'badge-green':'badge-red'}">${v.w9==='yes'?'On file':'Missing'}</span><br>Agreement: <span class="badge ${agBadge[v.agreement]||'badge-muted'}">${v.agreement==='signed'?'Signed':v.agreement==='na'?'N/A':'Pending'}</span>`;
   document.getElementById('vd-notes').textContent = v.notes || '—';
-
-  // Job history
   renderVendorJobs(id);
 }
 
 function renderVendorJobs(vendorId) {
   const jv = jobVendors.filter(x => x.vendorId === vendorId);
   const tbody = document.getElementById('vd-job-rows');
-  if (!jv.length) {
-    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;font-size:13px">No job history yet.</td></tr>';
-    document.getElementById('vd-totals').innerHTML = '—';
-    return;
-  }
+  if (!jv.length) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px;font-size:13px">No job history yet.</td></tr>'; document.getElementById('vd-totals').innerHTML = '—'; return; }
   tbody.innerHTML = jv.map(j => {
     const client = clients.find(c => c.id === j.clientId);
-    return `<tr class="tr-clickable" onclick="openJobDetail('${j.clientId}')">
-      <td><strong>${client ? client.name : '—'}</strong></td>
-      <td>${j.phase||'—'}</td>
-      <td>$${parseFloat(j.bid||0).toFixed(2)}</td>
-      <td>$${parseFloat(j.actual||0).toFixed(2)}</td>
-      <td><strong>$${parseFloat(j.pmFee||0).toFixed(2)}</strong></td>
-      <td><span class="badge ${j.status==='Complete'?'badge-green':j.status==='In Progress'?'badge-amber':'badge-muted'}">${j.status||'—'}</span></td>
-    </tr>`;
+    return `<tr class="tr-clickable" onclick="openJobDetail('${j.clientId}')"><td><strong>${client?client.name:'—'}</strong></td><td>${j.phase||'—'}</td><td>$${parseFloat(j.bid||0).toFixed(2)}</td><td>$${parseFloat(j.actual||0).toFixed(2)}</td><td><strong>$${parseFloat(j.pmFee||0).toFixed(2)}</strong></td><td><span class="badge ${j.status==='Complete'?'badge-green':j.status==='In Progress'?'badge-amber':'badge-muted'}">${j.status||'—'}</span></td></tr>`;
   }).join('');
-
-  const totalBid    = jv.reduce((s,j) => s + parseFloat(j.bid||0), 0);
   const totalActual = jv.reduce((s,j) => s + parseFloat(j.actual||0), 0);
   const totalPM     = jv.reduce((s,j) => s + parseFloat(j.pmFee||0), 0);
-  document.getElementById('vd-totals').innerHTML = `
-    <span style="margin-right:24px">Jobs: <strong>${jv.length}</strong></span>
-    <span style="margin-right:24px">Total Billed: <strong>$${totalActual.toFixed(2)}</strong></span>
-    <span>Total PM Fees: <strong>$${totalPM.toFixed(2)}</strong></span>
-  `;
+  document.getElementById('vd-totals').innerHTML = `<span style="margin-right:24px">Jobs: <strong>${jv.length}</strong></span><span style="margin-right:24px">Total Billed: <strong>$${totalActual.toFixed(2)}</strong></span><span>Total PM Fees: <strong>$${totalPM.toFixed(2)}</strong></span>`;
 }
 
 function openEditVendor() {
@@ -1371,11 +1292,7 @@ function openEditVendor() {
   editingVendor = v;
   document.getElementById('vendor-modal-title').textContent = 'Edit Vendor';
   document.getElementById('vendor-modal-save-btn').textContent = 'Save Changes';
-  const fields = {
-    'v-name':v.name,'v-area':v.area,'v-contact':v.contact,'v-phone':v.phone,
-    'v-email':v.email,'v-addr-street':v.addrStreet,'v-addr-city':v.addrCity,
-    'v-addr-state':v.addrState,'v-addr-zip':v.addrZip,'v-notes':v.notes
-  };
+  const fields = {'v-name':v.name,'v-area':v.area,'v-contact':v.contact,'v-phone':v.phone,'v-email':v.email,'v-addr-street':v.addrStreet,'v-addr-city':v.addrCity,'v-addr-state':v.addrState,'v-addr-zip':v.addrZip,'v-notes':v.notes};
   Object.entries(fields).forEach(([id,val]) => { const el=document.getElementById(id); if(el) el.value=val||''; });
   document.getElementById('v-cat').value = v.cat || 'Movers';
   document.getElementById('v-ins').value = v.ins || 'no';
@@ -1393,7 +1310,7 @@ function updateDashboard() {
   document.getElementById('stat-vendors').textContent = vendors.filter(v=>v.ins==='yes'&&v.w9==='yes').length;
 }
 
-// ── Billing calc (standalone) ─────────────────────────────────────────────────
+// ── Billing calc ──────────────────────────────────────────────────────────────
 function calcBilling() {
   const init=parseFloat(document.getElementById('init-fee').value)||0,bid=parseFloat(document.getElementById('vendor-bid').value)||0,actual=parseFloat(document.getElementById('vendor-actual').value)||0,credit=parseInt(document.getElementById('credit-select').value);
   const lower=bid&&actual?Math.min(bid,actual):(bid||actual),pm=lower*.085,initNet=credit?Math.max(0,init-500):init;
