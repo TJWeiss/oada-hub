@@ -109,6 +109,8 @@ tr:last-child td{border-bottom:none;}
 /* Note visibility badge */
 .note-public{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:var(--accent-light);color:var(--accent);letter-spacing:.08em;}
 .note-internal{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:var(--warm);color:var(--muted);letter-spacing:.08em;}
+.note-filter-btn.active{background:var(--accent);color:#fff;border-color:var(--accent);}
+.note-phase-tag{font-family:'DM Mono',monospace;font-size:9px;padding:2px 7px;border-radius:3px;background:var(--steel-light);color:var(--steel);letter-spacing:.08em;}
 .vendor-row-assigned td{background:var(--accent-light);}
 .billing-line{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--warm);font-size:13px;}
 .billing-line:last-child{border-bottom:none;}
@@ -399,16 +401,36 @@ code{font-family:'DM Mono',monospace;font-size:11px;background:var(--warm);paddi
       <div class="job-tab-panel" id="jt-notes">
         <div style="margin-bottom:16px">
           <textarea id="new-note-text" class="form-textarea" style="width:100%;min-height:72px;margin-bottom:10px" placeholder="Add a note, communication record, or update..."></textarea>
-          <div style="display:flex;align-items:center;justify-content:space-between">
-            <div class="toggle-row">
-              <label class="toggle">
-                <input type="checkbox" id="note-public-toggle">
-                <span class="toggle-slider"></span>
-              </label>
-              <span class="toggle-label" id="note-toggle-label">Internal only</span>
+          <div style="display:flex;align-items:center;justify-content:space-between;gap:12px">
+            <div style="display:flex;align-items:center;gap:12px;flex:1">
+              <select class="form-select" id="note-phase" style="font-size:12px;padding:6px 10px;min-width:160px">
+                <option value="">— No Phase —</option>
+                <option>Intake</option>
+                <option>Space Plan</option>
+                <option>Contract</option>
+                <option>Active</option>
+                <option>Closeout</option>
+                <option>Completed</option>
+              </select>
+              <div class="toggle-row">
+                <label class="toggle">
+                  <input type="checkbox" id="note-public-toggle">
+                  <span class="toggle-slider"></span>
+                </label>
+                <span class="toggle-label" id="note-toggle-label">Internal only</span>
+              </div>
             </div>
             <button class="btn btn-primary" onclick="addNote()">Add Note</button>
           </div>
+        </div>
+        <div style="display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap">
+          <button class="btn btn-outline btn-sm note-filter-btn active" onclick="filterNotes('',this)">All</button>
+          <button class="btn btn-outline btn-sm note-filter-btn" onclick="filterNotes('Intake',this)">Intake</button>
+          <button class="btn btn-outline btn-sm note-filter-btn" onclick="filterNotes('Space Plan',this)">Space Plan</button>
+          <button class="btn btn-outline btn-sm note-filter-btn" onclick="filterNotes('Contract',this)">Contract</button>
+          <button class="btn btn-outline btn-sm note-filter-btn" onclick="filterNotes('Active',this)">Active</button>
+          <button class="btn btn-outline btn-sm note-filter-btn" onclick="filterNotes('Closeout',this)">Closeout</button>
+          <button class="btn btn-outline btn-sm note-filter-btn" onclick="filterNotes('Completed',this)">Completed</button>
         </div>
         <div class="table-wrap">
           <div id="jd-notes-list" style="padding:4px 0"></div>
@@ -1135,7 +1157,8 @@ async function saveJobBilling() {
 }
 
 // ── Job Notes ─────────────────────────────────────────────────────────────────
-// Toggle label update
+let activeNoteFilter = '';
+
 document.getElementById('note-public-toggle').addEventListener('change', function() {
   document.getElementById('note-toggle-label').textContent = this.checked ? 'Visible on client portal' : 'Internal only';
 });
@@ -1144,12 +1167,14 @@ async function addNote() {
   const text = document.getElementById('new-note-text').value.trim();
   if (!text) return;
   const isPublic = document.getElementById('note-public-toggle').checked;
+  const phase    = document.getElementById('note-phase').value;
   const r = {
-    clientId: currentClientId,
+    clientId:  currentClientId,
     text,
     timestamp: new Date().toLocaleString(),
-    author: 'Jim Weiss',
-    public: isPublic ? 'true' : 'false'
+    author:    'Jim Weiss',
+    public:    isPublic ? 'true' : 'false',
+    phase:     phase || ''
   };
   setSyncStatus('syncing','Saving...');
   try {
@@ -1160,19 +1185,45 @@ async function addNote() {
   document.getElementById('new-note-text').value = '';
   document.getElementById('note-public-toggle').checked = false;
   document.getElementById('note-toggle-label').textContent = 'Internal only';
+  document.getElementById('note-phase').value = '';
+  renderJobNotes(currentClientId);
+}
+
+function filterNotes(phase, btn) {
+  activeNoteFilter = phase;
+  document.querySelectorAll('.note-filter-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  renderJobNotes(currentClientId);
+}
+
+async function deleteNote(id) {
+  if (!confirm('Delete this note?')) return;
+  setSyncStatus('syncing','Deleting...');
+  try {
+    await apiCall({action:'deleteJobNote', id});
+    jobNotes = jobNotes.filter(n => n.id !== id);
+    setSyncStatus('ok','Deleted');
+  } catch(e){ setSyncStatus('error','Delete failed'); }
   renderJobNotes(currentClientId);
 }
 
 function renderJobNotes(clientId) {
-  const notes = jobNotes.filter(n=>n.clientId===clientId).slice().reverse();
+  let notes = jobNotes.filter(n => n.clientId === clientId);
+  if (activeNoteFilter) notes = notes.filter(n => n.phase === activeNoteFilter);
+  notes = notes.slice().reverse();
   const el = document.getElementById('jd-notes-list');
-  if(!notes.length){ el.innerHTML='<div style="text-align:center;padding:24px;font-size:13px;color:var(--muted)">No notes yet.</div>'; return; }
+  if (!notes.length) {
+    el.innerHTML = '<div style="text-align:center;padding:24px;font-size:13px;color:var(--muted)">No notes' + (activeNoteFilter ? ' for this phase' : ' yet') + '.</div>';
+    return;
+  }
   el.innerHTML = notes.map(n => {
     const isPublic = n.public === 'true' || n.public === true;
     return `<div class="note-entry">
       <div class="note-meta">
         <span>${n.timestamp} · ${n.author}</span>
+        ${n.phase ? `<span class="note-phase-tag">${n.phase}</span>` : ''}
         <span class="${isPublic ? 'note-public' : 'note-internal'}">${isPublic ? 'Client visible' : 'Internal'}</span>
+        <button class="btn btn-outline btn-sm" style="margin-left:auto;padding:2px 8px;font-size:10px" onclick="deleteNote('${n.id}')">Delete</button>
       </div>
       <div class="note-text">${n.text}</div>
     </div>`;
