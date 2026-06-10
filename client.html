@@ -556,22 +556,27 @@
 
     const md = client.movedate;
     if (md) {
-      const d = new Date(md + 'T12:00:00');
-      document.getElementById('display-movedate').textContent =
-        'Move date: ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      // Handle both ISO timestamps and plain date strings
+      const d = new Date(md.includes('T') ? md : md + 'T12:00:00');
+      if (!isNaN(d)) {
+        document.getElementById('display-movedate').textContent =
+          'Move date: ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+      }
     }
 
     // Phases
     const currentStatus = client.status || 'Intake';
-    const currentIdx    = PHASES.findIndex(p => p.key === currentStatus);
+    const isCompleted   = currentStatus === 'Completed';
+    const currentIdx    = isCompleted ? PHASES.length : PHASES.findIndex(p => p.key === currentStatus);
     const phaseList     = document.getElementById('phase-list');
     phaseList.innerHTML = '';
 
     PHASES.forEach((phase, i) => {
       let state, statusLabel;
-      if (i < currentIdx)      { state = 'done';     statusLabel = 'Complete';    }
-      else if (i === currentIdx){ state = 'active';   statusLabel = 'In Progress'; }
-      else                      { state = 'upcoming'; statusLabel = 'Upcoming';    }
+      if (isCompleted)           { state = 'done';     statusLabel = 'Complete';    }
+      else if (i < currentIdx)   { state = 'done';     statusLabel = 'Complete';    }
+      else if (i === currentIdx) { state = 'active';   statusLabel = 'In Progress'; }
+      else                       { state = 'upcoming'; statusLabel = 'Upcoming';    }
 
       // Client-facing note for active phase
       const noteText = (state === 'active' && client.clientNote) ? client.clientNote : '';
