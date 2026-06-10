@@ -598,13 +598,11 @@
     const notesList = document.getElementById('notes-list');
     notesList.innerHTML = '';
 
-    const publicNotes = notes.filter(n => n.public === 'true' || n.public === true);
-
-    if (publicNotes.length === 0) {
+    if (notes.length === 0) {
       notesList.innerHTML = '<p class="no-notes">No updates posted yet.</p>';
     } else {
-      publicNotes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-      publicNotes.forEach(note => {
+      notes.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+      notes.forEach(note => {
         const d = new Date(note.timestamp);
         const dateStr = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
         const div = document.createElement('div');
