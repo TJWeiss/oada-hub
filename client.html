@@ -3,20 +3,21 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>OADA Mobility — Project Status</title>
+<title>OADA Mobility · Project Status</title>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=DM+Mono:wght@300;400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --ink: #1a1a18;
-    --paper: #f5f2ec;
-    --warm: #e8e2d6;
-    --accent: #8b6f47;
-    --accent-light: #c4a882;
-    --muted: #9a9488;
-    --success: #4a7c59;
-    --pending: #8b6f47;
-    --upcoming: #c4bdb4;
-    --rule: #d4cfc6;
+    --ink: #1d1b3a;
+    --paper: #ffffff;
+    --muted: #686c87;
+    --rule: #b9bce6;
+    --faint: #e4e5f6;
+    --upcoming: #b1b4d3;
+    --accent: #0000aa;
+    --accent-mid: #7474bf;
+    --accent-soft: #eef0fb;
+    --over: #b03a3a;
+    --under: #2e7d4f;
   }
 
   * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -33,25 +34,20 @@
 
   /* ── HEADER ── */
   header {
-    border-bottom: 1px solid var(--rule);
+    border-bottom: 1px solid var(--accent);
     padding: 24px 40px;
     display: flex;
     align-items: baseline;
     gap: 16px;
   }
-
   .logo-word {
     font-family: 'Cormorant Garamond', serif;
-    font-weight: 300;
+    font-weight: 400;
     font-size: 28px;
     letter-spacing: 0.12em;
-    color: var(--ink);
-  }
-
-  .logo-word span {
     color: var(--accent);
   }
-
+  .logo-word span { color: var(--accent-mid); }
   .logo-sub {
     font-size: 10px;
     letter-spacing: 0.2em;
@@ -67,26 +63,18 @@
     justify-content: center;
     padding: 60px 20px;
   }
-
-  .container {
-    width: 100%;
-    max-width: 640px;
-  }
+  .container { width: 100%; max-width: 640px; transition: max-width 0.2s; }
+  .container.wide { max-width: 800px; }
 
   /* ── LOGIN ── */
-  #login-view {
-    animation: fadeUp 0.4s ease both;
-  }
-
+  #login-view { animation: fadeUp 0.4s ease both; }
   .login-heading {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 300;
     font-size: 36px;
     letter-spacing: 0.04em;
     margin-bottom: 8px;
-    color: var(--ink);
   }
-
   .login-sub {
     font-size: 11px;
     letter-spacing: 0.15em;
@@ -94,12 +82,8 @@
     color: var(--muted);
     margin-bottom: 48px;
   }
-
-  .field-group {
-    margin-bottom: 28px;
-  }
-
-  label {
+  .field-group { margin-bottom: 28px; }
+  label.field {
     display: block;
     font-size: 10px;
     letter-spacing: 0.2em;
@@ -107,8 +91,7 @@
     color: var(--muted);
     margin-bottom: 10px;
   }
-
-  input {
+  input[type=text], input[type=password] {
     width: 100%;
     background: transparent;
     border: none;
@@ -122,14 +105,13 @@
     transition: border-color 0.2s;
     letter-spacing: 0.06em;
   }
-
   input:focus { border-bottom-color: var(--accent); }
   input::placeholder { color: var(--upcoming); }
 
   .btn {
     margin-top: 40px;
-    background: var(--ink);
-    color: var(--paper);
+    background: var(--accent);
+    color: #fff;
     border: none;
     padding: 14px 40px;
     font-family: 'DM Mono', monospace;
@@ -140,31 +122,46 @@
     transition: background 0.2s;
     width: 100%;
   }
-
-  .btn:hover { background: var(--accent); }
+  .btn:hover { background: #00007a; }
   .btn:disabled { background: var(--upcoming); cursor: not-allowed; }
 
   .error-msg {
     margin-top: 20px;
     font-size: 11px;
     letter-spacing: 0.1em;
-    color: #a05050;
+    color: var(--over);
     text-align: center;
     min-height: 18px;
   }
 
-  /* ── PORTAL ── */
-  #portal-view {
-    display: none;
-    animation: fadeUp 0.4s ease both;
+  .sample-box {
+    margin-top: 36px;
+    padding: 18px 20px;
+    border: 1px solid var(--accent);
+    font-size: 12px;
+    line-height: 1.7;
+    color: var(--muted);
+    text-align: center;
+  }
+  .sample-box a {
+    display: inline-block;
+    margin-top: 8px;
+    color: var(--accent);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-decoration: none;
+    border-bottom: 1px solid var(--accent);
+    padding-bottom: 2px;
   }
 
+  /* ── PORTAL ── */
+  #portal-view { display: none; animation: fadeUp 0.4s ease both; }
   .portal-meta {
-    margin-bottom: 48px;
+    margin-bottom: 28px;
     padding-bottom: 24px;
     border-bottom: 1px solid var(--rule);
   }
-
   .client-name {
     font-family: 'Cormorant Garamond', serif;
     font-weight: 400;
@@ -172,7 +169,6 @@
     letter-spacing: 0.04em;
     margin-bottom: 6px;
   }
-
   .project-detail {
     font-size: 11px;
     letter-spacing: 0.15em;
@@ -181,111 +177,106 @@
     margin-bottom: 4px;
   }
 
+  .demo-bar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 20px;
+    flex-wrap: wrap;
+    border: 1px dashed var(--accent);
+    padding: 12px 16px;
+    margin-bottom: 28px;
+    font-size: 11px;
+    color: var(--muted);
+  }
+  .toggle-row { display: flex; align-items: center; gap: 10px; cursor: pointer; user-select: none; }
+  .toggle { position: relative; width: 34px; height: 18px; flex-shrink: 0; }
+  .toggle input { opacity: 0; width: 0; height: 0; position: absolute; }
+  .slider { position: absolute; inset: 0; background: var(--upcoming); border-radius: 18px; transition: background 0.2s; }
+  .slider::before {
+    content: ''; position: absolute; width: 14px; height: 14px; left: 2px; top: 2px;
+    background: #fff; border-radius: 50%; transition: transform 0.2s;
+  }
+  .toggle input:checked + .slider { background: var(--accent); }
+  .toggle input:checked + .slider::before { transform: translateX(16px); }
+  .toggle input:focus-visible + .slider { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .toggle-label { color: var(--ink); letter-spacing: 0.04em; }
+
+  /* Tabs */
+  .tabs { display: none; border-bottom: 1px solid var(--accent); margin-bottom: 40px; }
+  .tab {
+    background: none;
+    border: 1px solid transparent;
+    border-bottom: none;
+    margin-bottom: -1px;
+    padding: 10px 22px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .tab.on {
+    color: var(--accent);
+    background: var(--paper);
+    border-color: var(--accent);
+    border-bottom: 1px solid var(--paper);
+  }
+  .tab-panel { display: none; }
+  .tab-panel.on { display: block; animation: fadeUp 0.3s ease both; }
+
   /* ── PHASE TIMELINE ── */
-  .timeline-heading {
+  .section-heading {
     font-size: 10px;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: var(--muted);
     margin-bottom: 28px;
   }
-
-  .phase-list {
-    list-style: none;
-    position: relative;
-  }
-
+  .phase-list { list-style: none; position: relative; }
   .phase-list::before {
     content: '';
     position: absolute;
-    left: 11px;
-    top: 4px;
-    bottom: 4px;
+    left: 11px; top: 4px; bottom: 4px;
     width: 1px;
     background: var(--rule);
   }
-
-  .phase-item {
-    display: flex;
-    gap: 24px;
-    align-items: flex-start;
-    margin-bottom: 32px;
-    position: relative;
-  }
-
+  .phase-item { display: flex; gap: 24px; align-items: flex-start; margin-bottom: 32px; position: relative; }
   .phase-dot {
-    width: 23px;
-    height: 23px;
+    width: 23px; height: 23px;
     border-radius: 50%;
     flex-shrink: 0;
     margin-top: 1px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    position: relative;
-    z-index: 1;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; z-index: 1;
   }
-
-  .phase-dot.done {
-    background: var(--success);
-    border: 2px solid var(--success);
-  }
-
+  .phase-dot.done { background: var(--accent); border: 2px solid var(--accent); }
   .phase-dot.done::after {
     content: '';
-    width: 6px;
-    height: 10px;
+    width: 6px; height: 10px;
     border-right: 1.5px solid #fff;
     border-bottom: 1.5px solid #fff;
     transform: rotate(45deg) translate(-1px, -1px);
     display: block;
   }
-
   .phase-dot.active {
     background: var(--paper);
     border: 2px solid var(--accent);
     animation: pulse 2.5s ease-in-out infinite;
   }
-
-  .phase-dot.active::after {
-    content: '';
-    width: 7px;
-    height: 7px;
-    background: var(--accent);
-    border-radius: 50%;
-  }
-
-  .phase-dot.upcoming {
-    background: var(--paper);
-    border: 1px solid var(--rule);
-  }
-
+  .phase-dot.active::after { content: ''; width: 7px; height: 7px; background: var(--accent); border-radius: 50%; }
+  .phase-dot.upcoming { background: var(--paper); border: 1px solid var(--rule); }
   .phase-body { flex: 1; padding-top: 2px; }
-
-  .phase-name {
-    font-size: 13px;
-    letter-spacing: 0.08em;
-    font-weight: 400;
-    margin-bottom: 4px;
-  }
-
+  .phase-name { font-size: 13px; letter-spacing: 0.08em; font-weight: 400; margin-bottom: 4px; }
   .phase-name.done { color: var(--muted); }
   .phase-name.active { color: var(--ink); }
   .phase-name.upcoming { color: var(--upcoming); }
-
-  .phase-status-label {
-    font-size: 9px;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    margin-bottom: 6px;
-  }
-
-  .phase-status-label.done { color: var(--success); }
-  .phase-status-label.active { color: var(--accent); }
+  .phase-status-label { font-size: 9px; letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 6px; }
+  .phase-status-label.done, .phase-status-label.active { color: var(--accent); }
   .phase-status-label.upcoming { color: var(--upcoming); }
-
   .phase-note {
-    font-size: 12px;
+    font-size: 13px;
     line-height: 1.6;
     color: var(--muted);
     font-family: 'Cormorant Garamond', serif;
@@ -293,64 +284,108 @@
   }
 
   /* ── NOTES FEED ── */
-  .notes-section {
-    margin-top: 48px;
-    padding-top: 32px;
-    border-top: 1px solid var(--rule);
-  }
-
-  .notes-heading {
-    font-size: 10px;
-    letter-spacing: 0.22em;
-    text-transform: uppercase;
-    color: var(--muted);
-    margin-bottom: 24px;
-  }
-
-  .note-item {
-    margin-bottom: 20px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--warm);
-  }
-
+  .notes-section { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--rule); }
+  .note-item { margin-bottom: 20px; padding-bottom: 20px; border-bottom: 1px solid var(--faint); }
   .note-item:last-child { border-bottom: none; }
+  .note-date { font-size: 10px; letter-spacing: 0.15em; color: var(--muted); margin-bottom: 6px; }
+  .note-text { font-family: 'Cormorant Garamond', serif; font-size: 16px; line-height: 1.65; }
+  .no-notes { font-size: 12px; color: var(--upcoming); letter-spacing: 0.08em; }
 
-  .note-date {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    margin-bottom: 6px;
+  /* ── BUDGET ── */
+  .b-section { margin-bottom: 48px; }
+  .b-section .section-heading { margin-bottom: 16px; }
+  .tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: var(--accent); border: 1px solid var(--accent); }
+  .tile { background: var(--paper); padding: 18px 16px; }
+  .tile-label { font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .tile-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; line-height: 1.1; }
+  .tile-sub { font-size: 10px; color: var(--muted); margin-top: 6px; }
+  .callout {
+    margin-top: 20px; padding: 16px 18px;
+    border-left: 2px solid var(--accent); background: var(--accent-soft);
+    font-size: 12px; line-height: 1.7;
+  }
+  .callout strong { font-weight: 400; }
+
+  .ledger { border-top: 1px solid var(--rule); font-size: 13px; }
+  .ledger-row {
+    display: grid; grid-template-columns: 1fr auto; gap: 16px;
+    padding: 14px 0; border-bottom: 1px solid var(--rule); align-items: baseline;
+  }
+  .ledger-row.sub { padding: 6px 0 14px 18px; color: var(--muted); }
+  .ledger-row.total { border-bottom: none; padding-top: 18px; }
+  .ledger-row.total .item-name, .ledger-row.total .amt { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; }
+  .item-note { display: block; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; margin-top: 2px; }
+  .amt { text-align: right; white-space: nowrap; font-variant-numeric: tabular-nums; }
+  .struck { text-decoration: line-through; color: var(--upcoming); margin-right: 8px; }
+  .pill {
+    display: inline-block; font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 1px 7px; margin-left: 8px; border: 1px solid var(--rule); color: var(--muted); vertical-align: 1px;
+  }
+  .pill.paid, .pill.billed { border-color: var(--accent); color: var(--accent); }
+  .pill.waived { border-color: var(--accent); background: var(--accent); color: #fff; }
+
+  .budget { border: 1px solid var(--accent); font-size: 13px; }
+  .row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 88px 100px 104px 92px;
+    gap: 12px;
+    padding: 10px 16px;
+    align-items: baseline;
+  }
+  .row .num { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .row .mlabel { display: none; }
+  .row.cols {
+    background: var(--accent); color: #fff;
+    font-size: 9px; letter-spacing: 0.16em; text-transform: uppercase;
+    padding-top: 9px; padding-bottom: 9px;
+  }
+  .row.cols span:not(:first-child) { text-align: right; }
+  .row.phase-head { padding-top: 18px; padding-bottom: 8px; border-top: 1px solid var(--rule); }
+  .row.cols + .row.phase-head { border-top: none; }
+  .b-phase-title { display: flex; align-items: center; gap: 10px; grid-column: 1 / 4; }
+  .b-phase-status { grid-column: 4 / 6; text-align: right; font-size: 9px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--upcoming); }
+  .b-phase-status.done, .b-phase-status.active { color: var(--accent); }
+  .dot { width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--upcoming); flex-shrink: 0; }
+  .dot.done { background: var(--accent); border-color: var(--accent); }
+  .dot.active { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-soft); }
+  .b-phase-name { font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500; }
+  .row.line { border-top: 1px solid var(--faint); }
+  .row.phase-head + .row.line { border-top: none; }
+  .row.line .li-name { padding-left: 19px; }
+  .row.subtotal { background: var(--accent-soft); border-top: 1px solid var(--rule); font-size: 12px; }
+  .row.subtotal .li-name { padding-left: 19px; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+  .row.grand { background: var(--accent); color: #fff; padding-top: 14px; padding-bottom: 14px; }
+  .row.grand .li-name { font-size: 10px; letter-spacing: 0.16em; text-transform: uppercase; }
+  .row.grand .num { font-size: 14px; }
+  .row.grand .note, .row.grand .var, .row.grand .na, .row.grand .pending { color: #c9cbf0; }
+  .row.grand .var.over { color: #ffb8b8; }
+  .row.grand .var.under { color: #a9e8c3; }
+
+  .note { display: block; font-size: 10px; color: var(--muted); }
+  .var.over { color: var(--over); }
+  .var.under { color: var(--under); }
+  .var.even, .pending, .na { color: var(--upcoming); }
+
+  .summary .row { grid-template-columns: minmax(0, 1fr) 116px 116px 116px; }
+  .summary .row.line .li-name { padding-left: 0; }
+  .summary .row.cols + .row.line { border-top: none; }
+  .summary .row.total { border-top: 1px solid var(--accent); padding-top: 16px; padding-bottom: 16px; }
+  .summary .row.total .li-name, .summary .row.total .num:not(.var-cell) {
+    font-family: 'Cormorant Garamond', serif; font-size: 20px; font-weight: 500;
   }
 
-  .note-text {
-    font-family: 'Cormorant Garamond', serif;
-    font-size: 16px;
-    line-height: 1.65;
-    color: var(--ink);
-  }
-
-  .no-notes {
-    font-size: 12px;
-    color: var(--upcoming);
-    letter-spacing: 0.08em;
-  }
+  .fineprint { font-size: 11px; color: var(--muted); line-height: 1.8; }
+  .fineprint p + p { margin-top: 10px; }
 
   /* ── FOOTER ── */
   footer {
-    border-top: 1px solid var(--rule);
+    border-top: 1px solid var(--accent);
     padding: 20px 40px;
     display: flex;
     justify-content: space-between;
     align-items: center;
   }
-
-  .footer-text {
-    font-size: 10px;
-    letter-spacing: 0.15em;
-    color: var(--muted);
-    text-transform: uppercase;
-  }
-
+  .footer-text { font-size: 10px; letter-spacing: 0.15em; color: var(--muted); text-transform: uppercase; }
   .logout-btn {
     background: none;
     border: none;
@@ -365,7 +400,6 @@
     transition: color 0.2s, border-color 0.2s;
     display: none;
   }
-
   .logout-btn:hover { color: var(--accent); border-bottom-color: var(--accent); }
 
   /* ── LOADING ── */
@@ -377,12 +411,10 @@
     text-transform: uppercase;
     color: var(--muted);
   }
-
   .loading::after {
     content: '';
     display: inline-block;
-    width: 16px;
-    height: 16px;
+    width: 16px; height: 16px;
     border: 1px solid var(--rule);
     border-top-color: var(--accent);
     border-radius: 50%;
@@ -391,26 +423,29 @@
     vertical-align: middle;
   }
 
-  /* ── ANIMATIONS ── */
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(12px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
   @keyframes pulse {
-    0%, 100% { box-shadow: 0 0 0 0 rgba(139,111,71,0.3); }
-    50%       { box-shadow: 0 0 0 6px rgba(139,111,71,0); }
+    0%, 100% { box-shadow: 0 0 0 0 rgba(0,0,170,0.25); }
+    50%       { box-shadow: 0 0 0 6px rgba(0,0,170,0); }
   }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-  @keyframes spin {
-    to { transform: rotate(360deg); }
-  }
-
-  @media (max-width: 600px) {
+  @media (max-width: 640px) {
     header { padding: 18px 20px; }
     main { padding: 40px 16px; }
     footer { padding: 16px 20px; }
     .login-heading { font-size: 28px; }
+    .tiles { grid-template-columns: 1fr; }
+    .tab { padding: 10px 16px; }
+    .row.cols { display: none; }
+    .row, .summary .row { grid-template-columns: 1fr 1fr; row-gap: 8px; }
+    .row .li-name, .b-phase-title, .b-phase-status { grid-column: 1 / -1; }
+    .b-phase-status { text-align: left; padding-left: 19px; }
+    .row .num { text-align: left; }
+    .row .mlabel { display: block; font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .row.grand .mlabel { color: #c9cbf0; }
+    .row.line .num, .row.subtotal .num { padding-left: 19px; }
+    .summary .row .num { padding-left: 0; }
   }
 </style>
 </head>
@@ -422,7 +457,7 @@
 </header>
 
 <main>
-  <div class="container">
+  <div class="container" id="container">
 
     <!-- LOGIN -->
     <div id="login-view">
@@ -430,17 +465,22 @@
       <p class="login-sub">Enter your job code and PIN to view your project</p>
 
       <div class="field-group">
-        <label for="job-code">Job Code</label>
+        <label class="field" for="job-code">Job Code</label>
         <input type="text" id="job-code" placeholder="e.g. OADA-2026-001" autocomplete="off" autocapitalize="characters" spellcheck="false">
       </div>
 
       <div class="field-group">
-        <label for="pin">PIN</label>
+        <label class="field" for="pin">PIN</label>
         <input type="password" id="pin" placeholder="••••" maxlength="8">
       </div>
 
       <button class="btn" id="login-btn" onclick="handleLogin()">View My Project</button>
       <div class="error-msg" id="error-msg"></div>
+
+      <div class="sample-box">
+        Considering OADA for a family move? See how a project looks from the client's side, with its timeline, updates and budget.<br>
+        <a href="#demo" id="demo-link">See a sample project</a>
+      </div>
     </div>
 
     <!-- PORTAL -->
@@ -454,12 +494,79 @@
           <div class="project-detail" id="display-movedate"></div>
         </div>
 
-        <p class="timeline-heading">Project Phases</p>
-        <ul class="phase-list" id="phase-list"></ul>
+        <div class="demo-bar" id="demo-bar">
+          <span>Sample project with fictional client and vendor figures.</span>
+          <label class="toggle-row">
+            <span class="toggle">
+              <input type="checkbox" id="referral-toggle">
+              <span class="slider"></span>
+            </span>
+            <span class="toggle-label">Referral partner account</span>
+          </label>
+        </div>
 
-        <div class="notes-section">
-          <p class="notes-heading">Updates from OADA</p>
-          <div id="notes-list"></div>
+        <div class="tabs" id="tabs">
+          <button type="button" class="tab on" data-tab="progress">Progress</button>
+          <button type="button" class="tab" data-tab="budget">Budget</button>
+        </div>
+
+        <div class="tab-panel on" id="panel-progress">
+          <p class="section-heading">Project Phases</p>
+          <ul class="phase-list" id="phase-list"></ul>
+
+          <div class="notes-section">
+            <p class="section-heading">Updates from OADA</p>
+            <div id="notes-list"></div>
+          </div>
+        </div>
+
+        <div class="tab-panel" id="panel-budget">
+          <div class="b-section">
+            <p class="section-heading">Project Budget at a Glance</p>
+            <div class="tiles">
+              <div class="tile">
+                <div class="tile-label">Vendor Estimates</div>
+                <div class="tile-value" id="t-est"></div>
+                <div class="tile-sub">Total of all approved bids</div>
+              </div>
+              <div class="tile">
+                <div class="tile-label" id="t-act-label"></div>
+                <div class="tile-value" id="t-act"></div>
+                <div class="tile-sub" id="t-act-sub"></div>
+              </div>
+              <div class="tile">
+                <div class="tile-label">OADA Fees</div>
+                <div class="tile-value" id="t-oada"></div>
+                <div class="tile-sub" id="t-oada-sub"></div>
+              </div>
+            </div>
+            <div class="callout" id="callout"></div>
+          </div>
+
+          <div class="b-section">
+            <p class="section-heading">OADA Fees</p>
+            <div class="ledger" id="fee-ledger"></div>
+          </div>
+
+          <div class="b-section">
+            <p class="section-heading">Vendor Budget by Phase</p>
+            <div class="budget" id="budget"></div>
+          </div>
+
+          <div class="b-section">
+            <p class="section-heading">Total Project Cost</p>
+            <div class="budget summary" id="summary"></div>
+          </div>
+
+          <div class="b-section">
+            <p class="section-heading">How This Budget Works</p>
+            <div class="fineprint">
+              <p>You pay each vendor directly, at the rate in the bid you approved, and OADA bills its own fees separately. Nothing in the vendor columns passes through OADA.</p>
+              <p>The project management fee is 8.5% of each line item, calculated on whichever is lower, the approved bid or the vendor's final invoice. If a vendor comes in over the bid, OADA's fee stays at the bid amount; if a vendor comes in under, the fee drops with it. Fees for open phases are shown as projected and are billed once the phase closes and final invoices are in.</p>
+              <p>Variance compares each vendor's final invoice to the approved bid. It is shown only for line items that have been invoiced.</p>
+              <p id="credit-note"></p>
+            </div>
+          </div>
         </div>
 
       </div>
@@ -474,8 +581,10 @@
 </footer>
 
 <script>
-  // ── CONFIG ── Replace with your deployed Apps Script URL
+  // ── CONFIG ──
   const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrUahFee8e7-WQSuNGu4nEnoCCiULZP0EQM3S8VksbKyrM47VIh1fbehBB886vgq3V/exec';
+  const DEMO_CODE = 'OADA-2026-DEMO';
+  const DEMO_PIN  = '5678';
 
   const PHASES = [
     { key: 'Intake',    label: 'Intake & Authorization' },
@@ -486,12 +595,75 @@
     { key: 'Completed', label: 'Completed'              },
   ];
 
+  // Sample budget shown only on the demo job. Real clients get the Budget tab
+  // once the Apps Script returns a "budget" object in this same shape.
+  // actual: null means the vendor has not invoiced that line yet.
+  const DEMO_BUDGET = {
+    spacePlan: 200,
+    initiation: 1995,
+    creditSpacePlan: true,
+    waived: false,
+    spacePlanPaid: true,
+    initiationPaid: true,
+    phases: [
+      { name: 'Organizing & Sorting', items: [
+        { name: 'Sorting and downsizing labor, 3 days', est: 2400, actual: 2250 },
+        { name: 'Supplies: bins, labels, boxes',        est: 150,  actual: 185 },
+      ]},
+      { name: 'Disposal & Donation', items: [
+        { name: 'Junk removal, 2 truckloads',           est: 1200, actual: 1350, short: 'The junk removal' },
+        { name: 'Donation pickup with receipts',        est: 350,  actual: 350 },
+      ]},
+      { name: 'Moving', items: [
+        { name: 'Packing services',                     est: 900,  actual: 860 },
+        { name: 'Packing materials',                    est: 450,  actual: 495 },
+        { name: 'Move labor and truck',                 est: 3800, actual: 3650 },
+      ]},
+      { name: 'Unpacking & Setup', items: [
+        { name: 'Unpack, make beds, set up kitchen',    est: 800,  actual: 800 },
+        { name: 'Artwork and picture hanging',          est: 250,  actual: 300 },
+      ]},
+    ],
+  };
+
+  // Used only if the demo record can't be reached in the Sheet.
+  const DEMO_FALLBACK = {
+    client: { name: 'Smith, John (Demo)', service: 'Managed Transition', status: 'Completed', movedate: '', clientNote: '' },
+    notes: [],
+  };
+
   let currentClient = null;
+  let currentBudget = null;
+  let isDemo = false;
 
   // ── LOGIN ──
   document.getElementById('pin').addEventListener('keydown', e => {
     if (e.key === 'Enter') handleLogin();
   });
+
+  function fetchPortal(code, pin, onData, onFail) {
+    const cbName = 'portalCb_' + Date.now();
+    const script = document.createElement('script');
+    const timeout = setTimeout(() => {
+      delete window[cbName];
+      script.remove();
+      onFail('Connection error. Please try again.');
+    }, 10000);
+    window[cbName] = function(data) {
+      clearTimeout(timeout);
+      delete window[cbName];
+      script.remove();
+      if (data.error) onFail(data.error); else onData(data);
+    };
+    script.onerror = () => {
+      clearTimeout(timeout);
+      delete window[cbName];
+      script.remove();
+      onFail('Connection error. Please try again.');
+    };
+    script.src = `${SCRIPT_URL}?action=getClientPortal&jobCode=${encodeURIComponent(code)}&pin=${encodeURIComponent(pin)}&callback=${cbName}`;
+    document.head.appendChild(script);
+  }
 
   function handleLogin() {
     const code = document.getElementById('job-code').value.trim().toUpperCase();
@@ -505,36 +677,35 @@
     btn.disabled = true;
     btn.textContent = 'Verifying…';
 
-    const cbName = 'portalCb_' + Date.now();
-    const script = document.createElement('script');
-    const timeout = setTimeout(() => {
-      err.textContent = 'Connection error. Please try again.';
+    fetchPortal(code, pin, data => {
+      showPortal(data, code === DEMO_CODE);
+    }, msg => {
+      err.textContent = msg;
       btn.disabled = false;
       btn.textContent = 'View My Project';
-      delete window[cbName];
-      script.remove();
-    }, 10000);
-
-    window[cbName] = function(data) {
-      clearTimeout(timeout);
-      delete window[cbName];
-      script.remove();
-      if (data.error) {
-        err.textContent = data.error;
-        btn.disabled = false;
-        btn.textContent = 'View My Project';
-        return;
-      }
-      currentClient = data;
-      showPortal(data);
-    };
-
-    script.src = `${SCRIPT_URL}?action=getClientPortal&jobCode=${encodeURIComponent(code)}&pin=${encodeURIComponent(pin)}&callback=${cbName}`;
-    document.head.appendChild(script);
+    });
   }
 
+  function openDemo() {
+    document.getElementById('login-view').style.display = 'none';
+    document.getElementById('portal-view').style.display = 'block';
+    fetchPortal(DEMO_CODE, DEMO_PIN,
+      data => showPortal(data, true),
+      ()   => showPortal(DEMO_FALLBACK, true));
+  }
+
+  document.getElementById('demo-link').addEventListener('click', e => {
+    e.preventDefault();
+    try { history.replaceState(null, '', '#demo'); } catch (_) {}
+    openDemo();
+  });
+
   // ── PORTAL ──
-  function showPortal(data) {
+  function showPortal(data, demo) {
+    isDemo = demo;
+    currentClient = data;
+    currentBudget = data.budget || (demo ? DEMO_BUDGET : null);
+
     document.getElementById('login-view').style.display = 'none';
     document.getElementById('portal-view').style.display = 'block';
     document.getElementById('logout-btn').style.display = 'block';
@@ -543,6 +714,10 @@
       document.getElementById('loading-state').style.display = 'none';
       document.getElementById('portal-content').style.display = 'block';
       renderPortal(data);
+      document.getElementById('demo-bar').style.display = demo ? 'flex' : 'none';
+      document.getElementById('tabs').style.display = currentBudget ? 'flex' : 'none';
+      if (currentBudget) renderBudget();
+      showTab('progress');
     }, 600);
   }
 
@@ -550,17 +725,16 @@
     const client = data.client;
     const notes  = data.notes || [];
 
-    // Meta
     document.getElementById('display-name').textContent    = client.name || '';
     document.getElementById('display-service').textContent = client.service || '';
 
     const md = client.movedate;
+    const mdEl = document.getElementById('display-movedate');
+    mdEl.textContent = '';
     if (md) {
-      // Handle both ISO timestamps and plain date strings
       const d = new Date(md.includes('T') ? md : md + 'T12:00:00');
       if (!isNaN(d)) {
-        document.getElementById('display-movedate').textContent =
-          'Move date: ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
+        mdEl.textContent = 'Move date: ' + d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
       }
     }
 
@@ -578,7 +752,6 @@
       else if (i === currentIdx) { state = 'active';   statusLabel = 'In Progress'; }
       else                       { state = 'upcoming'; statusLabel = 'Upcoming';    }
 
-      // Client-facing note for active phase
       const noteText = (state === 'active' && client.clientNote) ? client.clientNote : '';
 
       const li = document.createElement('li');
@@ -597,7 +770,6 @@
     // Notes feed
     const notesList = document.getElementById('notes-list');
     notesList.innerHTML = '';
-
     if (notes.length === 0) {
       notesList.innerHTML = '<p class="no-notes">No updates posted yet.</p>';
     } else {
@@ -616,19 +788,196 @@
     }
   }
 
+  // ── TABS ──
+  function showTab(name) {
+    document.querySelectorAll('.tab').forEach(t => t.classList.toggle('on', t.dataset.tab === name));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('on', p.id === 'panel-' + name));
+    document.getElementById('container').classList.toggle('wide', name === 'budget');
+  }
+  document.querySelectorAll('.tab').forEach(t => t.addEventListener('click', () => showTab(t.dataset.tab)));
+  document.getElementById('referral-toggle').addEventListener('change', renderBudget);
+
+  // ── BUDGET ──
+  const PM_RATE = 0.085;
+  const STATUS_LABEL = { done: 'Complete', active: 'In Progress', upcoming: 'Upcoming' };
+  const r2 = n => Math.round(n * 100) / 100;
+  const money  = n => '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const money0 = n => '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
+  const fmt = (n, cents) => cents ? money(n) : money0(n);
+  const invoiced = it => it.actual !== null && it.actual !== undefined && it.actual !== '';
+
+  function feeFor(it) {
+    const a = invoiced(it) ? Number(it.actual) : null;
+    const basis = a === null ? it.est : Math.min(it.est, a);
+    return { fee: r2(basis * PM_RATE), note: a === null ? 'projected' : (a > it.est ? 'on bid' : 'on invoice') };
+  }
+
+  function totals(items) {
+    let est = 0, act = 0, variance = 0, fee = 0, billed = 0, feeEstBilled = 0, feeBilled = 0;
+    items.forEach(it => {
+      const f = feeFor(it).fee;
+      est += it.est; fee += f;
+      if (invoiced(it)) {
+        const a = Number(it.actual);
+        act += a; variance += a - it.est; billed++;
+        feeEstBilled += it.est * PM_RATE; feeBilled += f;
+      }
+    });
+    return { est, act, variance, fee: r2(fee), billed, count: items.length,
+             feeEstBilled: r2(feeEstBilled), feeBilled: r2(feeBilled) };
+  }
+
+  function phaseStatus(t) {
+    if (t.billed === t.count) return 'done';
+    return t.billed ? 'active' : 'upcoming';
+  }
+
+  function varCell(v, cents, any) {
+    if (!any) return '<span class="na">n/a</span>';
+    if (Math.abs(v) < 0.005) return '<span class="var even">On budget</span>';
+    return '<span class="var ' + (v > 0 ? 'over' : 'under') + '">' + fmt(v, cents) + (v > 0 ? ' over' : ' under') + '</span>';
+  }
+  function actCell(t, cents) {
+    if (!t.billed) return '<span class="pending">Pending</span>';
+    return fmt(t.act, cents) + (t.billed < t.count ? '<span class="note">to date</span>' : '');
+  }
+  const cell = (label, html) => '<span class="num"><span class="mlabel">' + label + '</span>' + html + '</span>';
+
+  function lrow(name, amt, pillClass, pillText, note) {
+    const pill = pillText ? ' <span class="pill ' + pillClass + '">' + pillText + '</span>' : '';
+    return '<div class="ledger-row"><span class="item-name">' + name + pill +
+      (note ? '<span class="item-note">' + note + '</span>' : '') + '</span><span class="amt">' + amt + '</span></div>';
+  }
+
+  function renderBudget() {
+    const B = currentBudget;
+    if (!B) return;
+    const waived = B.waived || (isDemo && document.getElementById('referral-toggle').checked);
+    const credit = B.creditSpacePlan ? B.spacePlan : 0;
+    const flat = waived ? 0 : B.initiation + B.spacePlan - credit;
+    const all = B.phases.flatMap(p => p.items);
+    const T = totals(all);
+    const done = T.billed === T.count;
+
+    // Tiles
+    document.getElementById('t-est').textContent = money0(T.est);
+    document.getElementById('t-act-label').textContent = done ? 'Vendors Final Billed' : 'Vendors Billed to Date';
+    document.getElementById('t-act').textContent = money0(T.act);
+    document.getElementById('t-act-sub').textContent = done
+      ? (Math.abs(T.variance) < 0.005 ? 'On budget' : money0(T.variance) + (T.variance < 0 ? ' under' : ' over') + ' the approved bids')
+      : T.billed + ' of ' + T.count + ' line items invoiced';
+    document.getElementById('t-oada').textContent = money0(flat + T.fee);
+    document.getElementById('t-oada-sub').textContent = done ? 'Final, all phases closed' : 'Projected total for the project';
+
+    // Callout: the largest overrun shows the lower-of rule in action
+    let worst = null;
+    all.forEach(it => {
+      if (invoiced(it) && it.actual > it.est && (!worst || it.actual - it.est > worst.actual - worst.est)) worst = it;
+    });
+    const callout = document.getElementById('callout');
+    callout.style.display = worst ? '' : 'none';
+    if (worst) {
+      callout.innerHTML = '<strong>Your fee never rises with an overrun.</strong> ' + (worst.short || worst.name) +
+        ' came in ' + money0(worst.actual - worst.est) + ' over the approved bid, so the 8.5% was calculated on the ' +
+        money0(worst.est) + ' bid instead of the ' + money0(worst.actual) + ' invoice.';
+    }
+
+    // Fee ledger
+    let h = '';
+    if (waived) {
+      h += lrow('Space Plan', '<span class="struck">' + money(B.spacePlan) + '</span>' + money(0), 'waived', 'Waived', 'Assessment visit and floor plan for the new residence');
+      h += lrow('Initiation Fee', '<span class="struck">' + money(B.initiation) + '</span>' + money(0), 'waived', 'Waived', 'Non-refundable, due at signing');
+    } else {
+      h += lrow('Space Plan', money(B.spacePlan), B.spacePlanPaid ? 'paid' : '', B.spacePlanPaid ? 'Paid' : 'Due', 'Assessment visit and floor plan for the new residence');
+      if (credit) {
+        h += lrow('Initiation Fee', money(B.initiation), '', '', 'Non-refundable, due at signing');
+        h += '<div class="ledger-row sub"><span>Less space plan credit</span><span class="amt">&minus;' + money(credit) + '</span></div>';
+        h += '<div class="ledger-row sub"><span>Initiation balance <span class="pill ' + (B.initiationPaid ? 'paid">Paid' : '">Due') + '</span></span><span class="amt">' + money(B.initiation - credit) + '</span></div>';
+      } else {
+        h += lrow('Initiation Fee', money(B.initiation), B.initiationPaid ? 'paid' : '', B.initiationPaid ? 'Paid' : 'Due', 'Non-refundable, due at signing');
+      }
+    }
+    B.phases.forEach(p => {
+      const t = totals(p.items);
+      const billed = t.billed === t.count;
+      h += lrow('PM Fee: ' + p.name, money(t.fee), billed ? 'billed' : '', billed ? 'Billed' : 'Projected');
+    });
+    h += '<div class="ledger-row total"><span class="item-name">Total OADA Fees</span><span class="amt">' + money(flat + T.fee) + '</span></div>';
+    document.getElementById('fee-ledger').innerHTML = h;
+
+    // Vendor budget table
+    let b = '<div class="row cols"><span>Line item</span><span>Estimate</span><span>Actual</span><span>Variance</span><span>PM Fee 8.5%</span></div>';
+    B.phases.forEach(p => {
+      const t = totals(p.items);
+      const st = phaseStatus(t);
+      b += '<div class="row phase-head"><span class="b-phase-title"><span class="dot ' + st + '"></span><span class="b-phase-name">' + p.name +
+           '</span></span><span class="b-phase-status ' + st + '">' + STATUS_LABEL[st] + '</span></div>';
+      p.items.forEach(it => {
+        const f = feeFor(it);
+        const has = invoiced(it);
+        b += '<div class="row line"><span class="li-name">' + it.name + '</span>' +
+          cell('Estimate', money0(it.est)) +
+          cell('Actual', has ? money0(it.actual) : '<span class="pending">Pending</span>') +
+          cell('Variance', has ? varCell(it.actual - it.est, false, true) : '<span class="na">n/a</span>') +
+          cell('PM Fee', money(f.fee) + '<span class="note">' + f.note + '</span>') + '</div>';
+      });
+      b += '<div class="row subtotal"><span class="li-name">' + p.name + ' subtotal</span>' +
+        cell('Estimate', money0(t.est)) + cell('Actual', actCell(t, false)) +
+        cell('Variance', varCell(t.variance, false, t.billed > 0)) + cell('PM Fee', money(t.fee)) + '</div>';
+    });
+    b += '<div class="row grand"><span class="li-name">All phases total</span>' +
+      cell('Estimate', money0(T.est)) + cell('Actual', actCell(T, false)) +
+      cell('Variance', varCell(T.variance, false, T.billed > 0)) + cell('PM Fee', money(T.fee)) + '</div>';
+    document.getElementById('budget').innerHTML = b;
+
+    // Total project cost
+    const actLabel = done ? 'Actual' : 'Actual to date';
+    const feeVar = r2(T.feeBilled - T.feeEstBilled);
+    const estFee = r2(T.est * PM_RATE);
+    const srow = (name, note, est, act, v) => '<div class="row line"><span class="li-name">' + name + '<span class="note">' + note + '</span></span>' +
+      cell('Estimate', est) + cell(actLabel, act) + cell('Variance', v) + '</div>';
+    let s = '<div class="row cols"><span>Cost</span><span>Estimate</span><span>' + actLabel + '</span><span>Variance</span></div>';
+    s += srow('Vendor costs', 'Paid by you directly to each vendor', money(T.est),
+      T.billed ? money(T.act) : '<span class="pending">Pending</span>', varCell(T.variance, true, T.billed > 0));
+    s += srow('OADA project management fees', '8.5% of the lower of bid or invoice', money(estFee),
+      T.billed ? money(T.feeBilled) : '<span class="pending">Pending</span>', varCell(feeVar, true, T.billed > 0));
+    s += srow('OADA space plan and initiation',
+      waived ? 'Waived for referral partner accounts'
+             : (credit ? money0(B.spacePlan) + ' space plan credited toward ' + money0(B.initiation) + ' initiation' : 'Space plan plus initiation'),
+      waived ? '<span class="struck">' + money(B.initiation + B.spacePlan - credit) + '</span>' + money(0) : money(flat),
+      money(flat), varCell(0, true, true));
+    const estAll = r2(T.est + estFee + flat), actAll = r2(T.act + T.feeBilled + flat), varAll = r2(T.variance + feeVar);
+    s += '<div class="row total"><span class="li-name">Total project cost</span>' +
+      cell('Estimate', money(estAll)) + cell(actLabel, money(actAll)) +
+      '<span class="num var-cell"><span class="mlabel">Variance</span>' + varCell(varAll, true, T.billed > 0) + '</span></div>';
+    document.getElementById('summary').innerHTML = s;
+
+    document.getElementById('credit-note').textContent = credit
+      ? 'The ' + money0(B.spacePlan) + ' space plan fee is credited in full toward the ' + money0(B.initiation) + ' initiation fee when the client goes ahead with the full engagement.'
+      : '';
+  }
+
   function handleLogout() {
     currentClient = null;
+    currentBudget = null;
+    isDemo = false;
+    try { history.replaceState(null, '', location.pathname + location.search); } catch (_) {}
     document.getElementById('portal-view').style.display  = 'none';
     document.getElementById('login-view').style.display   = 'block';
     document.getElementById('logout-btn').style.display   = 'none';
     document.getElementById('portal-content').style.display = 'none';
     document.getElementById('loading-state').style.display  = 'block';
+    document.getElementById('referral-toggle').checked = false;
+    document.getElementById('container').classList.remove('wide');
     document.getElementById('job-code').value = '';
     document.getElementById('pin').value      = '';
     document.getElementById('error-msg').textContent = '';
     document.getElementById('login-btn').disabled = false;
     document.getElementById('login-btn').textContent = 'View My Project';
   }
+
+  // A link ending in #demo opens the sample project directly.
+  if (location.hash === '#demo') openDemo();
 </script>
 
 </body>
