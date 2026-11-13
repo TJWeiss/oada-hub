@@ -799,6 +799,8 @@
 
   // ── BUDGET ──
   const PM_RATE = 0.085;
+  const SPACE_PLAN_NOTE = 'Floor plan for the new residence';
+  const INITIATION_NOTE = 'Non-refundable, due at signing. Covers the in-home assessment, requests for proposal to up to three vendors for each phase, and presentation of the bids to you before any job is awarded.';
   const STATUS_LABEL = { done: 'Complete', active: 'In Progress', upcoming: 'Upcoming' };
   const r2 = n => Math.round(n * 100) / 100;
   const money  = n => '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -885,16 +887,16 @@
     // Fee ledger
     let h = '';
     if (waived) {
-      h += lrow('Space Plan', '<span class="struck">' + money(B.spacePlan) + '</span>' + money(0), 'waived', 'Waived', 'Assessment visit and floor plan for the new residence');
-      h += lrow('Initiation Fee', '<span class="struck">' + money(B.initiation) + '</span>' + money(0), 'waived', 'Waived', 'Non-refundable, due at signing');
+      h += lrow('Space Plan', '<span class="struck">' + money(B.spacePlan) + '</span>' + money(0), 'waived', 'Waived', SPACE_PLAN_NOTE);
+      h += lrow('Initiation Fee', '<span class="struck">' + money(B.initiation) + '</span>' + money(0), 'waived', 'Waived', INITIATION_NOTE);
     } else {
-      h += lrow('Space Plan', money(B.spacePlan), B.spacePlanPaid ? 'paid' : '', B.spacePlanPaid ? 'Paid' : 'Due', 'Assessment visit and floor plan for the new residence');
+      h += lrow('Space Plan', money(B.spacePlan), B.spacePlanPaid ? 'paid' : '', B.spacePlanPaid ? 'Paid' : 'Due', SPACE_PLAN_NOTE);
       if (credit) {
-        h += lrow('Initiation Fee', money(B.initiation), '', '', 'Non-refundable, due at signing');
+        h += lrow('Initiation Fee', money(B.initiation), '', '', INITIATION_NOTE);
         h += '<div class="ledger-row sub"><span>Less space plan credit</span><span class="amt">&minus;' + money(credit) + '</span></div>';
         h += '<div class="ledger-row sub"><span>Initiation balance <span class="pill ' + (B.initiationPaid ? 'paid">Paid' : '">Due') + '</span></span><span class="amt">' + money(B.initiation - credit) + '</span></div>';
       } else {
-        h += lrow('Initiation Fee', money(B.initiation), B.initiationPaid ? 'paid' : '', B.initiationPaid ? 'Paid' : 'Due', 'Non-refundable, due at signing');
+        h += lrow('Initiation Fee', money(B.initiation), B.initiationPaid ? 'paid' : '', B.initiationPaid ? 'Paid' : 'Due', INITIATION_NOTE);
       }
     }
     B.phases.forEach(p => {
