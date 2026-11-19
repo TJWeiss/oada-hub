@@ -561,9 +561,9 @@
           <div class="b-section">
             <p class="section-heading">How This Budget Works</p>
             <div class="fineprint">
-              <p>You pay each vendor directly, at the rate in the bid you approved, and OADA bills its own fees separately. Nothing in the vendor columns passes through OADA.</p>
-              <p>The project management fee is 8.5% of each line item, calculated on whichever is lower, the approved bid or the vendor's final invoice. If a vendor comes in over the bid, OADA's fee stays at the bid amount; if a vendor comes in under, the fee drops with it. Fees for open phases are shown as projected and are billed once the phase closes and final invoices are in.</p>
-              <p>Variance compares each vendor's final invoice to the approved bid. It is shown only for line items that have been invoiced.</p>
+              <p>Vendors paid directly at the client-approved rate, OADA’s fees billed separately.</p>
+              <p>Project management fee: 8.5% of each line item, calculated on the approved bid or the vendor's final invoice, whichever is lower. Fees for open phases are shown as projected and are billed once the phase closes and final invoices are in.</p>
+              <p>Variance compares each vendor's final invoice to the approved bid, shown only for invoiced line items.</p>
               <p id="credit-note"></p>
             </div>
           </div>
@@ -602,9 +602,8 @@
     spacePlan: 200,
     initiation: 1995,
     creditSpacePlan: true,
-    waived: false,
-    spacePlanPaid: true,
-    initiationPaid: true,
+    spacePlanStatus: 'Paid',
+    initiationStatus: 'Paid',
     phases: [
       { name: 'Organizing & Sorting', items: [
         { name: 'Sorting and downsizing labor, 3 days', est: 2400, actual: 2250 },
@@ -800,13 +799,14 @@
   // ── BUDGET ──
   const PM_RATE = 0.085;
   const SPACE_PLAN_NOTE = 'Floor plan for the new residence';
-  const INITIATION_NOTE = 'Non-refundable, due at signing. Covers the in-home assessment, requests for proposal to up to three vendors for each phase, and presentation of the bids to you before any job is awarded.';
-  const STATUS_LABEL = { done: 'Complete', active: 'In Progress', upcoming: 'Upcoming' };
+  const INITIATION_NOTE = 'In-home assessment, requests for proposal to up to three vendors for each phase, and presentation of the bids to you before any job is awarded.';
+  const STATUS_LABEL = { done: 'Complete', active: 'In Progress', upcoming: 'Awarded' };
   const r2 = n => Math.round(n * 100) / 100;
   const money  = n => '$' + Math.abs(n).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
   const money0 = n => '$' + Math.round(Math.abs(n)).toLocaleString('en-US');
   const fmt = (n, cents) => cents ? money(n) : money0(n);
-  const invoiced = it => it.actual !== null && it.actual !== undefined && it.actual !== '';
+  const invoiced = it => it.actual !== null && it.actual !== undefined && it.actual !== '' && Number(it.actual) > 0;
+  const esc = t => String(t == null ? '' : t).replace(/[&<>"']/g, c => ({ '&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;', "'":'&#39;' }[c]));
 
   function feeFor(it) {
     const a = invoiced(it) ? Number(it.actual) : null;
@@ -854,9 +854,16 @@
   function renderBudget() {
     const B = currentBudget;
     if (!B) return;
-    const waived = B.waived || (isDemo && document.getElementById('referral-toggle').checked);
-    const credit = B.creditSpacePlan ? B.spacePlan : 0;
-    const flat = waived ? 0 : B.initiation + B.spacePlan - credit;
+    const demoWaive = isDemo && document.getElementById('referral-toggle').checked;
+    const spStatus  = demoWaive ? 'Waived' : (B.spacePlanStatus || 'Due');
+    const inStatus  = demoWaive ? 'Waived' : (B.initiationStatus || 'Due');
+    const spWaived  = spStatus === 'Waived', inWaived = inStatus === 'Waived';
+    const waived    = spWaived && inWaived;
+    // The space plan is credited toward initiation only when both were charged.
+    const credit = (B.creditSpacePlan && !spWaived && !inWaived) ? B.spacePlan : 0;
+    const standardFlat = B.initiation + B.spacePlan - (B.creditSpacePlan ? B.spacePlan : 0);
+    const flat = (spWaived ? 0 : B.spacePlan) + (inWaived ? 0 : B.initiation - credit);
+    const pillFor = st => st === 'Paid' ? 'paid' : st === 'Waived' ? 'waived' : '';
     const all = B.phases.flatMap(p => p.items);
     const T = totals(all);
     const done = T.billed === T.count;
@@ -879,30 +886,28 @@
     const callout = document.getElementById('callout');
     callout.style.display = worst ? '' : 'none';
     if (worst) {
-      callout.innerHTML = '<strong>Your fee never rises with an overrun.</strong> ' + (worst.short || worst.name) +
+      callout.innerHTML = '<strong>Your fee never rises with an overrun.</strong> ' + esc(worst.short || worst.name) +
         ' came in ' + money0(worst.actual - worst.est) + ' over the approved bid, so the 8.5% was calculated on the ' +
         money0(worst.est) + ' bid instead of the ' + money0(worst.actual) + ' invoice.';
     }
 
     // Fee ledger
     let h = '';
-    if (waived) {
-      h += lrow('Space Plan', '<span class="struck">' + money(B.spacePlan) + '</span>' + money(0), 'waived', 'Waived', SPACE_PLAN_NOTE);
+    if (spWaived) h += lrow('Space Plan', '<span class="struck">' + money(B.spacePlan) + '</span>' + money(0), 'waived', 'Waived', SPACE_PLAN_NOTE);
+    else          h += lrow('Space Plan', money(B.spacePlan), pillFor(spStatus), spStatus, SPACE_PLAN_NOTE);
+    if (inWaived) {
       h += lrow('Initiation Fee', '<span class="struck">' + money(B.initiation) + '</span>' + money(0), 'waived', 'Waived', INITIATION_NOTE);
+    } else if (credit) {
+      h += lrow('Initiation Fee', money(B.initiation), '', '', INITIATION_NOTE);
+      h += '<div class="ledger-row sub"><span>Less space plan credit</span><span class="amt">&minus;' + money(credit) + '</span></div>';
+      h += '<div class="ledger-row sub"><span>Initiation balance <span class="pill ' + pillFor(inStatus) + '">' + inStatus + '</span></span><span class="amt">' + money(B.initiation - credit) + '</span></div>';
     } else {
-      h += lrow('Space Plan', money(B.spacePlan), B.spacePlanPaid ? 'paid' : '', B.spacePlanPaid ? 'Paid' : 'Due', SPACE_PLAN_NOTE);
-      if (credit) {
-        h += lrow('Initiation Fee', money(B.initiation), '', '', INITIATION_NOTE);
-        h += '<div class="ledger-row sub"><span>Less space plan credit</span><span class="amt">&minus;' + money(credit) + '</span></div>';
-        h += '<div class="ledger-row sub"><span>Initiation balance <span class="pill ' + (B.initiationPaid ? 'paid">Paid' : '">Due') + '</span></span><span class="amt">' + money(B.initiation - credit) + '</span></div>';
-      } else {
-        h += lrow('Initiation Fee', money(B.initiation), B.initiationPaid ? 'paid' : '', B.initiationPaid ? 'Paid' : 'Due', INITIATION_NOTE);
-      }
+      h += lrow('Initiation Fee', money(B.initiation), pillFor(inStatus), inStatus, INITIATION_NOTE);
     }
     B.phases.forEach(p => {
       const t = totals(p.items);
       const billed = t.billed === t.count;
-      h += lrow('PM Fee: ' + p.name, money(t.fee), billed ? 'billed' : '', billed ? 'Billed' : 'Projected');
+      h += lrow('PM Fee: ' + esc(p.name), money(t.fee), billed ? 'billed' : '', billed ? 'Billed' : 'Projected');
     });
     h += '<div class="ledger-row total"><span class="item-name">Total OADA Fees</span><span class="amt">' + money(flat + T.fee) + '</span></div>';
     document.getElementById('fee-ledger').innerHTML = h;
@@ -912,18 +917,18 @@
     B.phases.forEach(p => {
       const t = totals(p.items);
       const st = phaseStatus(t);
-      b += '<div class="row phase-head"><span class="b-phase-title"><span class="dot ' + st + '"></span><span class="b-phase-name">' + p.name +
+      b += '<div class="row phase-head"><span class="b-phase-title"><span class="dot ' + st + '"></span><span class="b-phase-name">' + esc(p.name) +
            '</span></span><span class="b-phase-status ' + st + '">' + STATUS_LABEL[st] + '</span></div>';
       p.items.forEach(it => {
         const f = feeFor(it);
         const has = invoiced(it);
-        b += '<div class="row line"><span class="li-name">' + it.name + '</span>' +
+        b += '<div class="row line"><span class="li-name">' + esc(it.name) + '</span>' +
           cell('Estimate', money0(it.est)) +
           cell('Actual', has ? money0(it.actual) : '<span class="pending">Pending</span>') +
           cell('Variance', has ? varCell(it.actual - it.est, false, true) : '<span class="na">n/a</span>') +
           cell('PM Fee', money(f.fee) + '<span class="note">' + f.note + '</span>') + '</div>';
       });
-      b += '<div class="row subtotal"><span class="li-name">' + p.name + ' subtotal</span>' +
+      b += '<div class="row subtotal"><span class="li-name">' + esc(p.name) + ' subtotal</span>' +
         cell('Estimate', money0(t.est)) + cell('Actual', actCell(t, false)) +
         cell('Variance', varCell(t.variance, false, t.billed > 0)) + cell('PM Fee', money(t.fee)) + '</div>';
     });
@@ -945,8 +950,10 @@
       T.billed ? money(T.feeBilled) : '<span class="pending">Pending</span>', varCell(feeVar, true, T.billed > 0));
     s += srow('OADA space plan and initiation',
       waived ? 'Waived for referral partner accounts'
+             : spWaived ? 'Space plan waived'
+             : inWaived ? 'Initiation fee waived'
              : (credit ? money0(B.spacePlan) + ' space plan credited toward ' + money0(B.initiation) + ' initiation' : 'Space plan plus initiation'),
-      waived ? '<span class="struck">' + money(B.initiation + B.spacePlan - credit) + '</span>' + money(0) : money(flat),
+      (spWaived || inWaived) ? '<span class="struck">' + money(standardFlat) + '</span>' + money(flat) : money(flat),
       money(flat), varCell(0, true, true));
     const estAll = r2(T.est + estFee + flat), actAll = r2(T.act + T.feeBilled + flat), varAll = r2(T.variance + feeVar);
     s += '<div class="row total"><span class="li-name">Total project cost</span>' +
@@ -954,8 +961,8 @@
       '<span class="num var-cell"><span class="mlabel">Variance</span>' + varCell(varAll, true, T.billed > 0) + '</span></div>';
     document.getElementById('summary').innerHTML = s;
 
-    document.getElementById('credit-note').textContent = credit
-      ? 'The ' + money0(B.spacePlan) + ' space plan fee is credited in full toward the ' + money0(B.initiation) + ' initiation fee when the client goes ahead with the full engagement.'
+    document.getElementById('credit-note').textContent = B.creditSpacePlan
+      ? money0(B.spacePlan) + ' space plan fee (where applicable) credited in full towards the initiation fee with full engagement.'
       : '';
   }
 
