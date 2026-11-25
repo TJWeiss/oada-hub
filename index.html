@@ -741,6 +741,7 @@ const DEFAULT_INITIATION = 1995;
 const SERVICES = ['Organizing & Sorting','Disposal & Donation','Estate Sale','Cleanout & Remediation','Moving','Unpacking & Setup'];
 const CAT_TO_SERVICE = { 'Organizers / Sorters':'Organizing & Sorting', 'Junk Haulers':'Disposal & Donation', 'Estate Sale':'Estate Sale', 'Biohazard / Hoarding':'Cleanout & Remediation', 'Movers':'Moving' };
 function normFeeStatus(x) { x = String(x||'').toLowerCase(); return x === 'waived' ? 'waived' : x === 'paid' ? 'paid' : 'due'; }
+const DEFAULT_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxrUahFee8e7-WQSuNGu4nEnoCCiULZP0EQM3S8VksbKyrM47VIh1fbehBB886vgq3V/exec';
 let SCRIPT_URL = localStorage.getItem(STORAGE_KEY) || '';
 let ADMIN_KEY  = localStorage.getItem(KEY_STORAGE) || '';
 let clients = [], vendors = [], jobVendors = [], jobNotes = [];
@@ -774,14 +775,18 @@ function setSyncStatus(s, label) {
 }
 function showConfigBanner(msg) {
   if (msg) document.getElementById('config-title').textContent = msg;
-  document.getElementById('script-url-input').value = SCRIPT_URL;
+  document.getElementById('script-url-input').value = SCRIPT_URL || DEFAULT_SCRIPT_URL;
   document.getElementById('admin-key-input').value = '';
   document.getElementById('config-banner').classList.remove('hidden');
 }
 function saveScriptUrl() {
   const url = document.getElementById('script-url-input').value.trim();
   const key = document.getElementById('admin-key-input').value.trim();
-  if (!url || !key) return;
+  if (!url || !key) {
+    document.getElementById('config-title').textContent = !url ? 'Paste the script address in the first box, then click Connect.' : 'Paste the hub key in the second box, then click Connect.';
+    (!url ? document.getElementById('script-url-input') : document.getElementById('admin-key-input')).focus();
+    return;
+  }
   SCRIPT_URL = url;
   ADMIN_KEY  = key;
   localStorage.setItem(STORAGE_KEY, url);
@@ -1480,7 +1485,7 @@ document.querySelectorAll('.modal-overlay').forEach(o=>o.addEventListener('click
 
 // ── Init ──────────────────────────────────────────────────────────────────────
 if(SCRIPT_URL && ADMIN_KEY) document.getElementById('config-banner').classList.add('hidden');
-else if(SCRIPT_URL) showConfigBanner('Enter the hub key to reconnect to Google Sheets.');
+else showConfigBanner(SCRIPT_URL ? 'Enter the hub key to reconnect to Google Sheets.' : 'Paste the hub key below and click Connect.');
 loadAll();
 </script>
 </body>
